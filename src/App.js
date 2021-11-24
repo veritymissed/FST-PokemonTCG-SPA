@@ -33,6 +33,8 @@ function App() {
 }
 
 function NavBar(props){
+  let [isLogin,setIsLogin] = useState(false);
+
   let useStyles = makeStyles({
     navBarContainer:{
 
@@ -44,7 +46,16 @@ function NavBar(props){
     <Box className={classes.navBarContainer}>
       <Box>FST PokemonTcg</Box>
       <Button>Favorite list</Button>
-      <Button>Login / SignUp</Button>
+      {isLogin && (
+        <Button onClick={(e)=>{
+          setIsLogin(false)
+        }}>Logout</Button>
+      )}
+      {!isLogin && (
+        <Button onClick={(e)=>{
+          setIsLogin(true)
+        }}>Login / SignUp</Button>
+      )}
     </Box>
   );
 }

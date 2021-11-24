@@ -42,6 +42,39 @@ function NavBar(props){
   });
   let classes = useStyles();
 
+  let registerUser = async () => {
+    let registerPromise = new Promise(function(resolve, reject) {
+      let options = {
+        'method': 'POST',
+        'url': 'http://localhost:3000/users/',
+        'headers': {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        form: {
+          'username': 'Hex5',
+          'password': 'Hexing677s',
+          'email': 'fuck4@gmail.com'
+        }
+      };
+      request(options, function (error, response) {
+        if (error) throw error;
+        else resolve(response.body)
+      });
+
+    })
+
+    try {
+      let res = await registerPromise;
+      console.log('register res', res)
+
+    } catch (e) {
+      console.log(e)
+    } finally {
+
+    }
+
+  }
+
   return (
     <Box className={classes.navBarContainer}>
       <Box>FST PokemonTcg</Box>
@@ -53,6 +86,7 @@ function NavBar(props){
       )}
       {!isLogin && (
         <Button onClick={(e)=>{
+          registerUser()
           setIsLogin(true)
         }}>Login / SignUp</Button>
       )}
@@ -88,7 +122,7 @@ function QueryBlock(props){
           uri: `https://api.pokemontcg.io/v2/cards/?q=${queryString}`,
           q: queryString,
         }, function(err, res, body){
-          if(err) throw(err)
+          if(err) throw err
           else resolve(JSON.parse(body))
         });
       } catch (e) {

@@ -1,0 +1,1109 @@
+{
+    "data": [
+        {
+            "id": "xy4-117",
+            "name": "AZ",
+            "supertype": "Trainer",
+            "subtypes": [
+                "Supporter"
+            ],
+            "hp": "",
+            "rules": [
+                "Put 1 Pokémon into your hand. (Discard all cards attached to that Pokémon.)",
+                "You may play only 1 Supporter card during your turn (before your attack)."
+            ],
+            "set": {
+                "id": "xy4",
+                "name": "Phantom Forces",
+                "series": "XY",
+                "printedTotal": 119,
+                "total": 119,
+                "legalities": {
+                    "unlimited": "Legal",
+                    "expanded": "Legal"
+                },
+                "ptcgoCode": "PHF",
+                "releaseDate": "2014/11/05",
+                "updatedAt": "2020/08/14 09:35:00",
+                "images": {
+                    "symbol": "https://images.pokemontcg.io/xy4/symbol.png",
+                    "logo": "https://images.pokemontcg.io/xy4/logo.png"
+                }
+            },
+            "number": "117",
+            "artist": "Naoki Saito",
+            "rarity": "Rare Ultra",
+            "legalities": {
+                "unlimited": "Legal",
+                "expanded": "Legal"
+            },
+            "images": {
+                "small": "https://images.pokemontcg.io/xy4/117.png",
+                "large": "https://images.pokemontcg.io/xy4/117_hires.png"
+            },
+            "tcgplayer": {
+                "url": "https://prices.pokemontcg.io/tcgplayer/xy4-117",
+                "updatedAt": "2021/10/22",
+                "prices": {
+                    "holofoil": {
+                        "low": 5.66,
+                        "mid": 9.42,
+                        "high": 999.99,
+                        "market": 9.9,
+                        "directLow": 6.92
+                    }
+                }
+            },
+            "cardmarket": {
+                "url": "https://prices.pokemontcg.io/cardmarket/xy4-117",
+                "updatedAt": "2021/10/22",
+                "prices": {
+                    "averageSellPrice": 10.15,
+                    "lowPrice": 4.5,
+                    "trendPrice": 11.21,
+                    "germanProLow": null,
+                    "suggestedPrice": null,
+                    "reverseHoloSell": null,
+                    "reverseHoloLow": null,
+                    "reverseHoloTrend": 8.14,
+                    "lowPriceExPlus": 5.0,
+                    "avg1": 11.5,
+                    "avg7": 9.7,
+                    "avg30": 9.87,
+                    "reverseHoloAvg1": 7.75,
+                    "reverseHoloAvg7": 6.3,
+                    "reverseHoloAvg30": 7.7
+                }
+            }
+        },
+        {
+            "id": "xy4-91",
+            "name": "AZ",
+            "supertype": "Trainer",
+            "subtypes": [
+                "Supporter"
+            ],
+            "hp": "",
+            "rules": [
+                "Put 1 Pokémon into your hand. (Discard all cards attached to that Pokémon.)",
+                "You may play only 1 Supporter card during your turn (before your attack)."
+            ],
+            "set": {
+                "id": "xy4",
+                "name": "Phantom Forces",
+                "series": "XY",
+                "printedTotal": 119,
+                "total": 119,
+                "legalities": {
+                    "unlimited": "Legal",
+                    "expanded": "Legal"
+                },
+                "ptcgoCode": "PHF",
+                "releaseDate": "2014/11/05",
+                "updatedAt": "2020/08/14 09:35:00",
+                "images": {
+                    "symbol": "https://images.pokemontcg.io/xy4/symbol.png",
+                    "logo": "https://images.pokemontcg.io/xy4/logo.png"
+                }
+            },
+            "number": "91",
+            "artist": "Ken Sugimori",
+            "rarity": "Uncommon",
+            "legalities": {
+                "unlimited": "Legal",
+                "expanded": "Legal"
+            },
+            "images": {
+                "small": "https://images.pokemontcg.io/xy4/91.png",
+                "large": "https://images.pokemontcg.io/xy4/91_hires.png"
+            },
+            "tcgplayer": {
+                "url": "https://prices.pokemontcg.io/tcgplayer/xy4-91",
+                "updatedAt": "2021/10/22",
+                "prices": {
+                    "normal": {
+                        "low": 0.13,
+                        "mid": 0.27,
+                        "high": 999.99,
+                        "market": 0.14,
+                        "directLow": 0.13
+                    },
+                    "reverseHolofoil": {
+                        "low": 0.25,
+                        "mid": 0.5,
+                        "high": 1.95,
+                        "market": 0.47,
+                        "directLow": 0.43
+                    }
+                }
+            },
+            "cardmarket": {
+                "url": "https://prices.pokemontcg.io/cardmarket/xy4-91",
+                "updatedAt": "2021/10/22",
+                "prices": {
+                    "averageSellPrice": 0.22,
+                    "lowPrice": 0.02,
+                    "trendPrice": 0.13,
+                    "germanProLow": null,
+                    "suggestedPrice": null,
+                    "reverseHoloSell": null,
+                    "reverseHoloLow": 0.39,
+                    "reverseHoloTrend": 0.81,
+                    "lowPriceExPlus": 0.05,
+                    "avg1": 0.09,
+                    "avg7": 0.23,
+                    "avg30": 0.24,
+                    "reverseHoloAvg1": 0.49,
+                    "reverseHoloAvg7": 0.68,
+                    "reverseHoloAvg30": 0.55
+                }
+            }
+        },
+        {
+            "id": "pl2-88",
+            "name": "Aaron's Collection",
+            "supertype": "Trainer",
+            "subtypes": [
+                "Supporter"
+            ],
+            "hp": "",
+            "rules": [
+                "You can play only one Supporter card each turn. When you play this card, put it next to your Active Pokémon. When your turn ends, discard this card.",
+                "Search your discard pile for up to 2 in any combination of Pokémon SP and basic Energy cards, show them to your opponent, and put them into your hand."
+            ],
+            "set": {
+                "id": "pl2",
+                "name": "Rising Rivals",
+                "series": "Platinum",
+                "printedTotal": 111,
+                "total": 114,
+                "legalities": {
+                    "unlimited": "Legal"
+                },
+                "ptcgoCode": "RR",
+                "releaseDate": "2009/05/16",
+                "updatedAt": "2020/08/14 09:35:00",
+                "images": {
+                    "symbol": "https://images.pokemontcg.io/pl2/symbol.png",
+                    "logo": "https://images.pokemontcg.io/pl2/logo.png"
+                }
+            },
+            "number": "88",
+            "artist": "Ken Sugimori",
+            "rarity": "Uncommon",
+            "legalities": {
+                "unlimited": "Legal"
+            },
+            "images": {
+                "small": "https://images.pokemontcg.io/pl2/88.png",
+                "large": "https://images.pokemontcg.io/pl2/88_hires.png"
+            },
+            "tcgplayer": {
+                "url": "https://prices.pokemontcg.io/tcgplayer/pl2-88",
+                "updatedAt": "2021/10/22",
+                "prices": {
+                    "normal": {
+                        "low": 0.25,
+                        "mid": 0.47,
+                        "high": 1.22,
+                        "market": 0.35,
+                        "directLow": null
+                    },
+                    "reverseHolofoil": {
+                        "low": 2.58,
+                        "mid": 3.45,
+                        "high": 4.6,
+                        "market": 3.84,
+                        "directLow": 15.0
+                    }
+                }
+            },
+            "cardmarket": {
+                "url": "https://prices.pokemontcg.io/cardmarket/pl2-88",
+                "updatedAt": "2021/10/22",
+                "prices": {
+                    "averageSellPrice": 0.1,
+                    "lowPrice": 0.02,
+                    "trendPrice": 0.09,
+                    "germanProLow": null,
+                    "suggestedPrice": null,
+                    "reverseHoloSell": 0.1,
+                    "reverseHoloLow": 0.39,
+                    "reverseHoloTrend": 0.87,
+                    "lowPriceExPlus": 0.04,
+                    "avg1": 0.15,
+                    "avg7": 0.1,
+                    "avg30": 0.25,
+                    "reverseHoloAvg1": 0.1,
+                    "reverseHoloAvg7": 0.69,
+                    "reverseHoloAvg30": 0.73
+                }
+            }
+        },
+        {
+            "id": "sm6-4",
+            "name": "Abomasnow",
+            "supertype": "Pokémon",
+            "subtypes": [
+                "Stage 1"
+            ],
+            "hp": "130",
+            "types": [
+                "Grass"
+            ],
+            "evolvesFrom": "Snover",
+            "abilities": [
+                {
+                    "name": "Blessings of the Frost",
+                    "text": "When you play this Pokémon from your hand to evolve 1 of your Pokémon during your turn, you may attach a Grass Energy card from your discard pile to 1 of your Pokémon.",
+                    "type": "Ability"
+                }
+            ],
+            "attacks": [
+                {
+                    "name": "Hypno Hammer",
+                    "cost": [
+                        "Grass",
+                        "Colorless",
+                        "Colorless",
+                        "Colorless"
+                    ],
+                    "convertedEnergyCost": 4,
+                    "damage": "80",
+                    "text": "Your opponent's Active Pokémon is now Asleep."
+                }
+            ],
+            "weaknesses": [
+                {
+                    "type": "Fire",
+                    "value": "×2"
+                }
+            ],
+            "retreatCost": [
+                "Colorless",
+                "Colorless",
+                "Colorless"
+            ],
+            "convertedRetreatCost": 3,
+            "set": {
+                "id": "sm6",
+                "name": "Forbidden Light",
+                "series": "Sun & Moon",
+                "printedTotal": 131,
+                "total": 146,
+                "legalities": {
+                    "unlimited": "Legal",
+                    "expanded": "Legal"
+                },
+                "ptcgoCode": "FLI",
+                "releaseDate": "2018/05/04",
+                "updatedAt": "2019/02/19 23:25:00",
+                "images": {
+                    "symbol": "https://images.pokemontcg.io/sm6/symbol.png",
+                    "logo": "https://images.pokemontcg.io/sm6/logo.png"
+                }
+            },
+            "number": "4",
+            "artist": "Masakazu Fukuda",
+            "rarity": "Rare",
+            "flavorText": "It lives a quiet life on mountains that are perpetually covered in snow. It hides itself by whipping up blizzards.",
+            "nationalPokedexNumbers": [
+                460
+            ],
+            "legalities": {
+                "unlimited": "Legal",
+                "expanded": "Legal"
+            },
+            "images": {
+                "small": "https://images.pokemontcg.io/sm6/4.png",
+                "large": "https://images.pokemontcg.io/sm6/4_hires.png"
+            },
+            "tcgplayer": {
+                "url": "https://prices.pokemontcg.io/tcgplayer/sm6-4",
+                "updatedAt": "2021/10/22",
+                "prices": {
+                    "normal": {
+                        "low": 0.1,
+                        "mid": 0.29,
+                        "high": 1.08,
+                        "market": 0.23,
+                        "directLow": 0.23
+                    },
+                    "reverseHolofoil": {
+                        "low": 0.2,
+                        "mid": 0.42,
+                        "high": 999.99,
+                        "market": 0.31,
+                        "directLow": 0.28
+                    }
+                }
+            },
+            "cardmarket": {
+                "url": "https://prices.pokemontcg.io/cardmarket/sm6-4",
+                "updatedAt": "2021/10/22",
+                "prices": {
+                    "averageSellPrice": 0.15,
+                    "lowPrice": 0.04,
+                    "trendPrice": 0.14,
+                    "germanProLow": null,
+                    "suggestedPrice": null,
+                    "reverseHoloSell": 0.23,
+                    "reverseHoloLow": 0.15,
+                    "reverseHoloTrend": 0.38,
+                    "lowPriceExPlus": 0.07,
+                    "avg1": 0.16,
+                    "avg7": 0.13,
+                    "avg30": 0.19,
+                    "reverseHoloAvg1": 0.23,
+                    "reverseHoloAvg7": 0.41,
+                    "reverseHoloAvg30": 0.41
+                }
+            }
+        },
+        {
+            "id": "swsh2-13",
+            "name": "Abomasnow",
+            "supertype": "Pokémon",
+            "subtypes": [
+                "Stage 1"
+            ],
+            "hp": "140",
+            "types": [
+                "Grass"
+            ],
+            "evolvesFrom": "Snover",
+            "attacks": [
+                {
+                    "name": "Soothing Scent",
+                    "cost": [
+                        "Grass",
+                        "Colorless",
+                        "Colorless"
+                    ],
+                    "convertedEnergyCost": 3,
+                    "damage": "80",
+                    "text": "Your opponent's Active Pokémon is now Asleep."
+                },
+                {
+                    "name": "Megaton Lariat",
+                    "cost": [
+                        "Grass",
+                        "Grass",
+                        "Colorless",
+                        "Colorless"
+                    ],
+                    "convertedEnergyCost": 4,
+                    "damage": "140",
+                    "text": ""
+                }
+            ],
+            "weaknesses": [
+                {
+                    "type": "Fire",
+                    "value": "×2"
+                }
+            ],
+            "retreatCost": [
+                "Colorless",
+                "Colorless",
+                "Colorless"
+            ],
+            "convertedRetreatCost": 3,
+            "set": {
+                "id": "swsh2",
+                "name": "Rebel Clash",
+                "series": "Sword & Shield",
+                "printedTotal": 192,
+                "total": 209,
+                "legalities": {
+                    "unlimited": "Legal",
+                    "standard": "Legal",
+                    "expanded": "Legal"
+                },
+                "ptcgoCode": "RCL",
+                "releaseDate": "2020/05/01",
+                "updatedAt": "2020/09/25 10:09:00",
+                "images": {
+                    "symbol": "https://images.pokemontcg.io/swsh2/symbol.png",
+                    "logo": "https://images.pokemontcg.io/swsh2/logo.png"
+                }
+            },
+            "number": "13",
+            "artist": "Kazuma Koda",
+            "rarity": "Rare",
+            "flavorText": "If it sees any packs of Darumaka going after Snover, it chases them off, swinging its sizable arms like hammers.",
+            "nationalPokedexNumbers": [
+                460
+            ],
+            "legalities": {
+                "unlimited": "Legal",
+                "standard": "Legal",
+                "expanded": "Legal"
+            },
+            "images": {
+                "small": "https://images.pokemontcg.io/swsh2/13.png",
+                "large": "https://images.pokemontcg.io/swsh2/13_hires.png"
+            },
+            "tcgplayer": {
+                "url": "https://prices.pokemontcg.io/tcgplayer/swsh2-13",
+                "updatedAt": "2021/10/22",
+                "prices": {
+                    "normal": {
+                        "low": 0.06,
+                        "mid": 0.26,
+                        "high": 5.0,
+                        "market": 0.24,
+                        "directLow": 0.24
+                    },
+                    "reverseHolofoil": {
+                        "low": 0.25,
+                        "mid": 0.5,
+                        "high": 1.95,
+                        "market": 0.48,
+                        "directLow": 0.31
+                    }
+                }
+            },
+            "cardmarket": {
+                "url": "https://prices.pokemontcg.io/cardmarket/swsh2-13",
+                "updatedAt": "2021/10/22",
+                "prices": {
+                    "averageSellPrice": 0.12,
+                    "lowPrice": 0.02,
+                    "trendPrice": 0.12,
+                    "germanProLow": null,
+                    "suggestedPrice": null,
+                    "reverseHoloSell": 0.62,
+                    "reverseHoloLow": 0.15,
+                    "reverseHoloTrend": 0.56,
+                    "lowPriceExPlus": 0.02,
+                    "avg1": 0.05,
+                    "avg7": 0.13,
+                    "avg30": 0.14,
+                    "reverseHoloAvg1": 1.02,
+                    "reverseHoloAvg7": 0.63,
+                    "reverseHoloAvg30": 0.53
+                }
+            }
+        },
+        {
+            "id": "sm5-38",
+            "name": "Abomasnow",
+            "supertype": "Pokémon",
+            "subtypes": [
+                "Stage 1"
+            ],
+            "hp": "130",
+            "types": [
+                "Water"
+            ],
+            "evolvesFrom": "Snover",
+            "abilities": [
+                {
+                    "name": "Blessings of the Frost",
+                    "text": "When you play this Pokémon from your hand to evolve 1 of your Pokémon during your turn, you may attach a Water Energy card from your discard pile to 1 of your Pokémon.",
+                    "type": "Ability"
+                }
+            ],
+            "attacks": [
+                {
+                    "name": "Hypno Hammer",
+                    "cost": [
+                        "Water",
+                        "Colorless",
+                        "Colorless",
+                        "Colorless"
+                    ],
+                    "convertedEnergyCost": 4,
+                    "damage": "80",
+                    "text": "Your opponent's Active Pokémon is now Asleep."
+                }
+            ],
+            "weaknesses": [
+                {
+                    "type": "Metal",
+                    "value": "×2"
+                }
+            ],
+            "retreatCost": [
+                "Colorless",
+                "Colorless",
+                "Colorless"
+            ],
+            "convertedRetreatCost": 3,
+            "set": {
+                "id": "sm5",
+                "name": "Ultra Prism",
+                "series": "Sun & Moon",
+                "printedTotal": 156,
+                "total": 156,
+                "legalities": {
+                    "unlimited": "Legal",
+                    "expanded": "Legal"
+                },
+                "ptcgoCode": "UPR",
+                "releaseDate": "2018/02/02",
+                "updatedAt": "2019/02/19 23:25:00",
+                "images": {
+                    "symbol": "https://images.pokemontcg.io/sm5/symbol.png",
+                    "logo": "https://images.pokemontcg.io/sm5/logo.png"
+                }
+            },
+            "number": "38",
+            "artist": "Masakazu Fukuda",
+            "rarity": "Rare",
+            "flavorText": "It lives a quiet life on mountains that are perpetually covered in snow. It hides itself by whipping up blizzards.",
+            "nationalPokedexNumbers": [
+                460
+            ],
+            "legalities": {
+                "unlimited": "Legal",
+                "expanded": "Legal"
+            },
+            "images": {
+                "small": "https://images.pokemontcg.io/sm5/38.png",
+                "large": "https://images.pokemontcg.io/sm5/38_hires.png"
+            },
+            "tcgplayer": {
+                "url": "https://prices.pokemontcg.io/tcgplayer/sm5-38",
+                "updatedAt": "2021/10/22",
+                "prices": {
+                    "normal": {
+                        "low": 0.1,
+                        "mid": 0.27,
+                        "high": 4.95,
+                        "market": 0.2,
+                        "directLow": 0.21
+                    },
+                    "reverseHolofoil": {
+                        "low": 0.2,
+                        "mid": 0.49,
+                        "high": 19.95,
+                        "market": 0.27,
+                        "directLow": 0.25
+                    }
+                }
+            },
+            "cardmarket": {
+                "url": "https://prices.pokemontcg.io/cardmarket/sm5-38",
+                "updatedAt": "2021/10/22",
+                "prices": {
+                    "averageSellPrice": 0.16,
+                    "lowPrice": 0.02,
+                    "trendPrice": 0.21,
+                    "germanProLow": null,
+                    "suggestedPrice": null,
+                    "reverseHoloSell": 0.45,
+                    "reverseHoloLow": 0.1,
+                    "reverseHoloTrend": 0.46,
+                    "lowPriceExPlus": 0.02,
+                    "avg1": 0.19,
+                    "avg7": 0.13,
+                    "avg30": 0.15,
+                    "reverseHoloAvg1": 0.49,
+                    "reverseHoloAvg7": 0.43,
+                    "reverseHoloAvg30": 0.52
+                }
+            }
+        },
+        {
+            "id": "sm11-42",
+            "name": "Abomasnow",
+            "supertype": "Pokémon",
+            "subtypes": [
+                "Stage 1"
+            ],
+            "hp": "140",
+            "types": [
+                "Water"
+            ],
+            "evolvesFrom": "Snover",
+            "attacks": [
+                {
+                    "name": "Quick Freeze",
+                    "cost": [
+                        "Water",
+                        "Colorless",
+                        "Colorless"
+                    ],
+                    "convertedEnergyCost": 3,
+                    "damage": "70",
+                    "text": "If your opponent's Active Pokémon has any Water Energy attached to it, it is now Paralyzed."
+                },
+                {
+                    "name": "Wild Tackle",
+                    "cost": [
+                        "Water",
+                        "Water",
+                        "Colorless",
+                        "Colorless"
+                    ],
+                    "convertedEnergyCost": 4,
+                    "damage": "140",
+                    "text": "This Pokémon does 20 damage to itself."
+                }
+            ],
+            "weaknesses": [
+                {
+                    "type": "Metal",
+                    "value": "×2"
+                }
+            ],
+            "retreatCost": [
+                "Colorless",
+                "Colorless",
+                "Colorless",
+                "Colorless"
+            ],
+            "convertedRetreatCost": 4,
+            "set": {
+                "id": "sm11",
+                "name": "Unified Minds",
+                "series": "Sun & Moon",
+                "printedTotal": 236,
+                "total": 258,
+                "legalities": {
+                    "unlimited": "Legal",
+                    "expanded": "Legal"
+                },
+                "ptcgoCode": "UNM",
+                "releaseDate": "2019/08/02",
+                "updatedAt": "2021/09/01 05:37:00",
+                "images": {
+                    "symbol": "https://images.pokemontcg.io/sm11/symbol.png",
+                    "logo": "https://images.pokemontcg.io/sm11/logo.png"
+                }
+            },
+            "number": "42",
+            "artist": "Shin Nagasawa",
+            "rarity": "Rare",
+            "flavorText": "It blankets wide areas in snow by whipping up blizzards. It is also known as \"The Ice Monster.\"",
+            "nationalPokedexNumbers": [
+                460
+            ],
+            "legalities": {
+                "unlimited": "Legal",
+                "expanded": "Legal"
+            },
+            "images": {
+                "small": "https://images.pokemontcg.io/sm11/42.png",
+                "large": "https://images.pokemontcg.io/sm11/42_hires.png"
+            },
+            "tcgplayer": {
+                "url": "https://prices.pokemontcg.io/tcgplayer/sm11-42",
+                "updatedAt": "2021/10/22",
+                "prices": {
+                    "normal": {
+                        "low": 0.1,
+                        "mid": 0.29,
+                        "high": 5.0,
+                        "market": 0.21,
+                        "directLow": 0.21
+                    },
+                    "reverseHolofoil": {
+                        "low": 0.25,
+                        "mid": 0.48,
+                        "high": 4.99,
+                        "market": 0.34,
+                        "directLow": 0.34
+                    }
+                }
+            },
+            "cardmarket": {
+                "url": "https://prices.pokemontcg.io/cardmarket/sm11-42",
+                "updatedAt": "2021/10/22",
+                "prices": {
+                    "averageSellPrice": 0.24,
+                    "lowPrice": 0.02,
+                    "trendPrice": 0.21,
+                    "germanProLow": null,
+                    "suggestedPrice": null,
+                    "reverseHoloSell": null,
+                    "reverseHoloLow": 0.02,
+                    "reverseHoloTrend": 0.48,
+                    "lowPriceExPlus": 0.02,
+                    "avg1": 0.82,
+                    "avg7": 0.25,
+                    "avg30": 0.26,
+                    "reverseHoloAvg1": 0.15,
+                    "reverseHoloAvg7": 0.37,
+                    "reverseHoloAvg30": 0.42
+                }
+            }
+        },
+        {
+            "id": "xy8-40",
+            "name": "Abomasnow",
+            "supertype": "Pokémon",
+            "subtypes": [
+                "Stage 1"
+            ],
+            "hp": "130",
+            "types": [
+                "Water"
+            ],
+            "evolvesFrom": "Snover",
+            "attacks": [
+                {
+                    "name": "Ice Age",
+                    "cost": [
+                        "Water",
+                        "Colorless",
+                        "Colorless"
+                    ],
+                    "convertedEnergyCost": 3,
+                    "damage": "80",
+                    "text": "If your opponent's Active Pokémon is a Dragon Pokémon, it is now Paralyzed."
+                },
+                {
+                    "name": "Frost Breath",
+                    "cost": [
+                        "Water",
+                        "Water",
+                        "Colorless",
+                        "Colorless"
+                    ],
+                    "convertedEnergyCost": 4,
+                    "damage": "110",
+                    "text": ""
+                }
+            ],
+            "weaknesses": [
+                {
+                    "type": "Metal",
+                    "value": "×2"
+                }
+            ],
+            "retreatCost": [
+                "Colorless",
+                "Colorless",
+                "Colorless",
+                "Colorless"
+            ],
+            "convertedRetreatCost": 4,
+            "set": {
+                "id": "xy8",
+                "name": "BREAKthrough",
+                "series": "XY",
+                "printedTotal": 162,
+                "total": 164,
+                "legalities": {
+                    "unlimited": "Legal",
+                    "expanded": "Legal"
+                },
+                "ptcgoCode": "BKT",
+                "releaseDate": "2015/11/04",
+                "updatedAt": "2019/04/10 19:59:00",
+                "images": {
+                    "symbol": "https://images.pokemontcg.io/xy8/symbol.png",
+                    "logo": "https://images.pokemontcg.io/xy8/logo.png"
+                }
+            },
+            "number": "40",
+            "artist": "Naoyo Kimura",
+            "rarity": "Rare",
+            "flavorText": "It lives a quiet life on mountains that are perpetually covered in snow. It hides itself by whipping up blizzards.",
+            "nationalPokedexNumbers": [
+                460
+            ],
+            "legalities": {
+                "unlimited": "Legal",
+                "expanded": "Legal"
+            },
+            "images": {
+                "small": "https://images.pokemontcg.io/xy8/40.png",
+                "large": "https://images.pokemontcg.io/xy8/40_hires.png"
+            },
+            "tcgplayer": {
+                "url": "https://prices.pokemontcg.io/tcgplayer/xy8-40",
+                "updatedAt": "2021/10/22",
+                "prices": {
+                    "normal": {
+                        "low": 0.1,
+                        "mid": 0.35,
+                        "high": 2.99,
+                        "market": 0.22,
+                        "directLow": 0.1
+                    },
+                    "reverseHolofoil": {
+                        "low": 0.25,
+                        "mid": 0.51,
+                        "high": 1.95,
+                        "market": 0.48,
+                        "directLow": 0.25
+                    }
+                }
+            },
+            "cardmarket": {
+                "url": "https://prices.pokemontcg.io/cardmarket/xy8-40",
+                "updatedAt": "2021/10/22",
+                "prices": {
+                    "averageSellPrice": 0.31,
+                    "lowPrice": 0.05,
+                    "trendPrice": 0.25,
+                    "germanProLow": null,
+                    "suggestedPrice": null,
+                    "reverseHoloSell": null,
+                    "reverseHoloLow": 0.75,
+                    "reverseHoloTrend": 0.68,
+                    "lowPriceExPlus": 0.05,
+                    "avg1": 0.5,
+                    "avg7": 0.27,
+                    "avg30": 0.28,
+                    "reverseHoloAvg1": 1.95,
+                    "reverseHoloAvg7": 0.63,
+                    "reverseHoloAvg30": 0.63
+                }
+            }
+        },
+        {
+            "id": "dp2-19",
+            "name": "Abomasnow",
+            "supertype": "Pokémon",
+            "subtypes": [
+                "Stage 1"
+            ],
+            "level": "40",
+            "hp": "100",
+            "types": [
+                "Grass"
+            ],
+            "evolvesFrom": "Snover",
+            "abilities": [
+                {
+                    "name": "Glacier Snow",
+                    "text": "If Abomasnow is your Active Pokémon and is damaged by an opponent's attack (even if Abomasnow is Knocked Out), the Attacking Pokémon is now Asleep.",
+                    "type": "Poké-Body"
+                }
+            ],
+            "attacks": [
+                {
+                    "name": "Heavy Blizzard",
+                    "cost": [
+                        "Water",
+                        "Colorless",
+                        "Colorless"
+                    ],
+                    "convertedEnergyCost": 3,
+                    "damage": "60",
+                    "text": "Flip a coin. If heads, put 1 damage counter on each of your opponent's Benched Pokémon."
+                }
+            ],
+            "weaknesses": [
+                {
+                    "type": "Fire",
+                    "value": "+30"
+                }
+            ],
+            "retreatCost": [
+                "Colorless",
+                "Colorless",
+                "Colorless"
+            ],
+            "convertedRetreatCost": 3,
+            "set": {
+                "id": "dp2",
+                "name": "Mysterious Treasures",
+                "series": "Diamond & Pearl",
+                "printedTotal": 123,
+                "total": 124,
+                "legalities": {
+                    "unlimited": "Legal"
+                },
+                "ptcgoCode": "MT",
+                "releaseDate": "2007/08/01",
+                "updatedAt": "2018/03/04 10:35:00",
+                "images": {
+                    "symbol": "https://images.pokemontcg.io/dp2/symbol.png",
+                    "logo": "https://images.pokemontcg.io/dp2/logo.png"
+                }
+            },
+            "number": "19",
+            "artist": "Kazuyuki Kano",
+            "rarity": "Rare",
+            "flavorText": "It whips up blizzards in mountains that are always buried in snow. It is the abominable snowman.",
+            "nationalPokedexNumbers": [
+                460
+            ],
+            "legalities": {
+                "unlimited": "Legal"
+            },
+            "images": {
+                "small": "https://images.pokemontcg.io/dp2/19.png",
+                "large": "https://images.pokemontcg.io/dp2/19_hires.png"
+            },
+            "tcgplayer": {
+                "url": "https://prices.pokemontcg.io/tcgplayer/dp2-19",
+                "updatedAt": "2021/10/22",
+                "prices": {
+                    "normal": {
+                        "low": 0.5,
+                        "mid": 0.91,
+                        "high": 3.26,
+                        "market": 0.74,
+                        "directLow": 0.89
+                    },
+                    "reverseHolofoil": {
+                        "low": 0.65,
+                        "mid": 1.2,
+                        "high": 4.99,
+                        "market": 3.07,
+                        "directLow": 0.82
+                    }
+                }
+            },
+            "cardmarket": {
+                "url": "https://prices.pokemontcg.io/cardmarket/dp2-19",
+                "updatedAt": "2021/10/22",
+                "prices": {
+                    "averageSellPrice": 0.24,
+                    "lowPrice": 0.05,
+                    "trendPrice": 0.34,
+                    "germanProLow": null,
+                    "suggestedPrice": null,
+                    "reverseHoloSell": 0.55,
+                    "reverseHoloLow": 0.29,
+                    "reverseHoloTrend": 0.58,
+                    "lowPriceExPlus": 0.05,
+                    "avg1": 0.02,
+                    "avg7": 0.29,
+                    "avg30": 0.74,
+                    "reverseHoloAvg1": 0.05,
+                    "reverseHoloAvg7": 0.58,
+                    "reverseHoloAvg30": 0.53
+                }
+            }
+        },
+        {
+            "id": "dp7-12",
+            "name": "Abomasnow",
+            "supertype": "Pokémon",
+            "subtypes": [
+                "Stage 1"
+            ],
+            "level": "42",
+            "hp": "100",
+            "types": [
+                "Water"
+            ],
+            "evolvesFrom": "Snover",
+            "abilities": [
+                {
+                    "name": "Snow Veil",
+                    "text": "As long as Abomasnow is your Active Pokémon, any damage done to your Pokémon by an opponent's attack is reduced by 20 (after applying Weakness and Resistance).",
+                    "type": "Poké-Body"
+                }
+            ],
+            "attacks": [
+                {
+                    "name": "Snow Play",
+                    "cost": [
+                        "Colorless",
+                        "Colorless"
+                    ],
+                    "convertedEnergyCost": 2,
+                    "damage": "20",
+                    "text": "Does 20 damage to each of your opponent's Benched Pokémon, excluding Grass Pokémon and Water Pokémon. (Don't apply Weakness and Resistance for Benched Pokémon.)"
+                },
+                {
+                    "name": "Below Zero",
+                    "cost": [
+                        "Water",
+                        "Colorless",
+                        "Colorless"
+                    ],
+                    "convertedEnergyCost": 3,
+                    "damage": "60",
+                    "text": "If Abomasnow evolved from Snover during this turn, the Defending Pokémon is now Paralyzed."
+                }
+            ],
+            "weaknesses": [
+                {
+                    "type": "Fire",
+                    "value": "+30"
+                }
+            ],
+            "retreatCost": [
+                "Colorless",
+                "Colorless",
+                "Colorless"
+            ],
+            "convertedRetreatCost": 3,
+            "set": {
+                "id": "dp7",
+                "name": "Stormfront",
+                "series": "Diamond & Pearl",
+                "printedTotal": 100,
+                "total": 103,
+                "legalities": {
+                    "unlimited": "Legal"
+                },
+                "ptcgoCode": "SF",
+                "releaseDate": "2008/11/01",
+                "updatedAt": "2020/05/01 16:06:00",
+                "images": {
+                    "symbol": "https://images.pokemontcg.io/dp7/symbol.png",
+                    "logo": "https://images.pokemontcg.io/dp7/logo.png"
+                }
+            },
+            "number": "12",
+            "artist": "Mitsuhiro Arita",
+            "rarity": "Rare",
+            "nationalPokedexNumbers": [
+                460
+            ],
+            "legalities": {
+                "unlimited": "Legal"
+            },
+            "images": {
+                "small": "https://images.pokemontcg.io/dp7/12.png",
+                "large": "https://images.pokemontcg.io/dp7/12_hires.png"
+            },
+            "tcgplayer": {
+                "url": "https://prices.pokemontcg.io/tcgplayer/dp7-12",
+                "updatedAt": "2021/10/22",
+                "prices": {
+                    "normal": {
+                        "low": 0.26,
+                        "mid": 0.75,
+                        "high": 2.4,
+                        "market": 1.04,
+                        "directLow": 0.75
+                    },
+                    "reverseHolofoil": {
+                        "low": 1.16,
+                        "mid": 2.74,
+                        "high": 7.38,
+                        "market": 2.22,
+                        "directLow": 1.68
+                    }
+                }
+            },
+            "cardmarket": {
+                "url": "https://prices.pokemontcg.io/cardmarket/dp7-12",
+                "updatedAt": "2021/10/22",
+                "prices": {
+                    "averageSellPrice": 0.25,
+                    "lowPrice": 0.02,
+                    "trendPrice": 0.19,
+                    "germanProLow": null,
+                    "suggestedPrice": null,
+                    "reverseHoloSell": 0.23,
+                    "reverseHoloLow": 0.1,
+                    "reverseHoloTrend": 0.49,
+                    "lowPriceExPlus": 0.04,
+                    "avg1": 0.5,
+                    "avg7": 0.23,
+                    "avg30": 0.31,
+                    "reverseHoloAvg1": 0.1,
+                    "reverseHoloAvg7": 0.41,
+                    "reverseHoloAvg30": 0.54
+                }
+            }
+        }
+    ],
+    "page": 1,
+    "pageSize": 10,
+    "count": 10,
+    "totalCount": 14058
+}

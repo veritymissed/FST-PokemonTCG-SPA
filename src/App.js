@@ -1,15 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import logo from './logo.svg';
 import './App.css';
-import { Box, TextField, Button, Typography } from '@mui/material';
+import { Box, TextField, Button, Typography, Icon } from '@mui/material';
 import { Card, CardMedia, CardContent, CardActions } from '@mui/material';
 import { makeStyles } from '@mui/styles';
+import FavoriteIcon from '@mui/icons-material/Favorite';
 
 import request from 'request';
 
 import * as ponkemon_cards from './static/data/cards.json'
 let cards = ponkemon_cards.default.data;
 
+// navBarContainer
 
 const useStyles = makeStyles((theme) => ({
 }));
@@ -30,6 +32,12 @@ function App() {
       </Box>
     </div>
   );
+}
+
+function LoginForm(){
+  return (
+    <Box></Box>
+  )
 }
 
 function NavBar(props){
@@ -80,9 +88,14 @@ function NavBar(props){
       <Box>FST PokemonTcg</Box>
       <Button>Favorite list</Button>
       {isLogin && (
+        <React.Fragment>
+        <Button>
+          <FavoriteIcon></FavoriteIcon>
+        </Button>
         <Button onClick={(e)=>{
           setIsLogin(false)
         }}>Logout</Button>
+        </React.Fragment>
       )}
       {!isLogin && (
         <Button onClick={(e)=>{

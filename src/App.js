@@ -50,6 +50,31 @@ function NavBar(props){
   });
   let classes = useStyles();
 
+  let loginPromise = new Promise(function(resolve, reject) {
+    let options = {
+      'method': 'POST',
+      'url': 'http://localhost:3000/auth/login',
+      'headers': {
+      }
+    };
+    request(options, function (error, response) {
+      if (error) throw error;
+      resolve(response.body);
+    });
+
+  });
+
+  let loginUser = async () => {
+    try {
+      let res = await loginPromise;
+      console.log('login res', res)
+    } catch (e) {
+      console.log(e)
+    } finally {
+
+    }
+  };
+
   let registerUser = async () => {
     let registerPromise = new Promise(function(resolve, reject) {
       let options = {
@@ -74,8 +99,9 @@ function NavBar(props){
     try {
       let res = await registerPromise;
       console.log('register res', res)
-
+      setIsLogin(true)
     } catch (e) {
+      setIsLogin(false)
       console.log(e)
     } finally {
 
@@ -98,10 +124,15 @@ function NavBar(props){
         </React.Fragment>
       )}
       {!isLogin && (
+        <React.Fragment>
         <Button onClick={(e)=>{
           registerUser()
           setIsLogin(true)
-        }}>Login / SignUp</Button>
+        }}>SignUp</Button>
+        <Button onClick={(e) => {
+          loginUser()
+        }}>Login</Button>
+        </React.Fragment>
       )}
     </Box>
   );

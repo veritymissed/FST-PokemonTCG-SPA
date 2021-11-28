@@ -110,11 +110,13 @@ function LoginForm(){
 }
 
 function RegisterForm(props){
+  let [isLoading, setIsLoading] = useState(false);
+
   let [formEmail, setFormEmail] = useState("");
   let [formPassword, setFormPassword] = useState("");
 
   let registerUser = async () => {
-    let loginPromise = new Promise(function(resolve, reject) {
+    let registerPromise = new Promise(function(resolve, reject) {
       let options = {
         'method': 'POST',
         'url': 'http://localhost:3000/users/',
@@ -134,12 +136,14 @@ function RegisterForm(props){
     });
 
     try {
-      let res = await loginPromise;
+      if(isLoading) return;
+      setIsLoading(true)
+      let res = await registerPromise;
       console.log('login res', res)
     } catch (e) {
       console.log(e)
     } finally {
-
+      setIsLoading(false);
     }
   };
 
@@ -164,7 +168,9 @@ function RegisterForm(props){
       />
       <Button onClick={(e) => {
         registerUser()
-      }}>Register</Button>
+      }}>Register
+      { isLoading && (<Loader width={15} height={15} borderWidth={6}></Loader>) }
+      </Button>
     </Box>
   )
 }

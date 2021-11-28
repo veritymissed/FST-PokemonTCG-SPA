@@ -22,6 +22,7 @@ function App() {
   return (
     <div className="App">
       <NavBar></NavBar>
+      <LoginForm></LoginForm>
       <QueryBlock></QueryBlock>
       <Box display="flex" justifyContent="left" flexWrap="wrap" maxWidth="900px" mx="auto">
         {
@@ -35,8 +36,66 @@ function App() {
 }
 
 function LoginForm(){
+  const [formEmail, setFormEmail] = useState("");
+  const [formPassword, setFormPassword] = useState("");
+
+  useEffect(() => {
+
+  },[])
+
+  let loginUser = async () => {
+    let loginPromise = new Promise(function(resolve, reject) {
+      let options = {
+        'method': 'POST',
+        'url': 'http://localhost:3000/auth/login',
+        'headers': {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          "username": formEmail,
+          "password": formPassword
+        })
+      };
+      request(options, function (error, response) {
+        if (error) throw error;
+        resolve(response.body);
+      });
+
+    });
+
+    try {
+      let res = await loginPromise;
+      console.log('login res', res)
+    } catch (e) {
+      console.log(e)
+    } finally {
+
+    }
+  };
+
   return (
-    <Box></Box>
+    <Box>
+      <TextField
+        required
+        id="outlined-required"
+        label="Email"
+        onChange={(e) => {
+          setFormEmail(e.target.value);
+        }}
+      />
+      <TextField
+        id="outlined-password-input"
+        label="Password"
+        type="password"
+        autoComplete="current-password"
+        onChange={(e) => {
+          setFormPassword(e.target.value);
+        }}
+      />
+      <Button onClick={(e) => {
+        loginUser()
+      }}>Login</Button>
+    </Box>
   )
 }
 
@@ -49,31 +108,6 @@ function NavBar(props){
     }
   });
   let classes = useStyles();
-
-  let loginPromise = new Promise(function(resolve, reject) {
-    let options = {
-      'method': 'POST',
-      'url': 'http://localhost:3000/auth/login',
-      'headers': {
-      }
-    };
-    request(options, function (error, response) {
-      if (error) throw error;
-      resolve(response.body);
-    });
-
-  });
-
-  let loginUser = async () => {
-    try {
-      let res = await loginPromise;
-      console.log('login res', res)
-    } catch (e) {
-      console.log(e)
-    } finally {
-
-    }
-  };
 
   let registerUser = async () => {
     let registerPromise = new Promise(function(resolve, reject) {
@@ -130,7 +164,7 @@ function NavBar(props){
           setIsLogin(true)
         }}>SignUp</Button>
         <Button onClick={(e) => {
-          loginUser()
+
         }}>Login</Button>
         </React.Fragment>
       )}

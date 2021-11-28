@@ -3,6 +3,7 @@ import logo from './logo.svg';
 import './App.css';
 import { Box, TextField, Button, Typography, Icon } from '@mui/material';
 import { Card, CardMedia, CardContent, CardActions } from '@mui/material';
+import { BrowserRouter as Router, Routes, Route, Link, useNavigate } from 'react-router-dom';
 import { makeStyles } from '@mui/styles';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 
@@ -11,26 +12,28 @@ import request from 'request';
 import * as ponkemon_cards from './static/data/cards.json'
 let cards = ponkemon_cards.default.data;
 
-// navBarContainer
-
-const useStyles = makeStyles((theme) => ({
-}));
-
-
 
 function App() {
   return (
     <div className="App">
+    <Router>
       <NavBar></NavBar>
-      <LoginForm></LoginForm>
+      <Routes>
+        <Route path="/"></Route>
+        <Route path="/login" element={<LoginForm />}></Route>
+        <Route path="/register" element={<RegisterForm />}></Route>
+      </Routes>
+      <React.Fragment>
       <QueryBlock></QueryBlock>
       <Box display="flex" justifyContent="left" flexWrap="wrap" maxWidth="900px" mx="auto">
-        {
-          cards.map((card) => (
-            <PokemonCard card={card}></PokemonCard>
-          ))
-        }
+      {
+        cards.map((card) => (
+          <PokemonCard card={card}></PokemonCard>
+        ))
+      }
       </Box>
+      </React.Fragment>
+    </Router>
     </div>
   );
 }
@@ -99,18 +102,12 @@ function LoginForm(){
   )
 }
 
-function NavBar(props){
-  let [isLogin,setIsLogin] = useState(false);
-
-  let useStyles = makeStyles({
-    navBarContainer:{
-
-    }
-  });
-  let classes = useStyles();
+function RegisterForm(props){
+  let [formEmail, setFormEmail] = useState("");
+  let [formPassword, setFormPassword] = useState("");
 
   let registerUser = async () => {
-    let registerPromise = new Promise(function(resolve, reject) {
+    let loginPromise = new Promise(function(resolve, reject) {
       let options = {
         'method': 'POST',
         'url': 'http://localhost:3000/users/',
@@ -118,33 +115,59 @@ function NavBar(props){
           'Content-Type': 'application/x-www-form-urlencoded'
         },
         form: {
-          'username': 'Hex5',
-          'password': 'Hexing677s',
-          'email': 'fuck4@gmail.com'
+          'email': formEmail,
+          'password': formPassword
         }
       };
       request(options, function (error, response) {
         if (error) throw error;
-        else resolve(response.body)
+        resolve(response.body);
       });
 
-    })
+    });
 
     try {
-      let res = await registerPromise;
-      console.log('register res', res)
-      setIsLogin(true)
+      let res = await loginPromise;
+      console.log('login res', res)
     } catch (e) {
-      setIsLogin(false)
       console.log(e)
     } finally {
 
     }
+  };
 
-  }
+  return(
+    <Box>
+      <TextField
+        required
+        id="outlined-required"
+        label="Email"
+        onChange={(e) => {
+          setFormEmail(e.target.value);
+        }}
+      />
+      <TextField
+        id="outlined-password-input"
+        label="Password"
+        type="password"
+        autoComplete="current-password"
+        onChange={(e) => {
+          setFormPassword(e.target.value);
+        }}
+      />
+      <Button onClick={(e) => {
+        registerUser()
+      }}>Register</Button>
+    </Box>
+  )
+}
+
+function NavBar(props){
+  let navigate = useNavigate();
+  let [isLogin,setIsLogin] = useState(false);
 
   return (
-    <Box className={classes.navBarContainer}>
+    <Box>
       <Box>FST PokemonTcg</Box>
       <Button>Favorite list</Button>
       {isLogin && (
@@ -160,11 +183,10 @@ function NavBar(props){
       {!isLogin && (
         <React.Fragment>
         <Button onClick={(e)=>{
-          registerUser()
-          setIsLogin(true)
+          navigate('/register')
         }}>SignUp</Button>
         <Button onClick={(e) => {
-
+          navigate('/login')
         }}>Login</Button>
         </React.Fragment>
       )}

@@ -39,8 +39,10 @@ function App() {
 }
 
 function LoginForm(){
-  const [formEmail, setFormEmail] = useState("");
-  const [formPassword, setFormPassword] = useState("");
+  let [isLoading, setIsLoading] = useState(false);
+
+  let [formEmail, setFormEmail] = useState("");
+  let [formPassword, setFormPassword] = useState("");
 
   useEffect(() => {
 
@@ -67,12 +69,14 @@ function LoginForm(){
     });
 
     try {
+      if(isLoading) return;
+      setIsLoading(true)
       let res = await loginPromise;
       console.log('login res', res)
     } catch (e) {
       console.log(e)
     } finally {
-
+      setIsLoading(false);
     }
   };
 
@@ -97,7 +101,10 @@ function LoginForm(){
       />
       <Button onClick={(e) => {
         loginUser()
-      }}>Login</Button>
+      }}>
+      Login
+      {isLoading && (<Loader width={15} height={15} borderWidth={6}></Loader>)}
+      </Button>
     </Box>
   )
 }
@@ -246,7 +253,7 @@ function QueryBlock(props){
       <TextField id="outlined-basic" label="rarity" variant="outlined" onChange={(e) => {setFormRarity(e.target.value)}}  />
       <Button onClick={queryCards}>Query</Button>
       { isQuerying && (
-        <Loader width={60} height={60}></Loader>
+        <Loader width={60} height={60} borderWidth={15}></Loader>
       )}
       { queryResult && queryResult.length && (queryResult.map((card) => (
         <PokemonCard card={card}></PokemonCard>
@@ -309,14 +316,14 @@ function Header(){
 }
 
 function Loader(props){
-  const { width, height } = props;
+  const { width, height, borderWidth } = props;
   let useStyles = makeStyles({
     loader: {
-      border: "16px solid #f3f3f3",
-      borderTop: "16px solid #555555",
+      border: `${borderWidth || 15}px solid #f3f3f3`,
+      borderTop: `${borderWidth || 15}px solid #555555`,
       borderRadius: "50%",
-      width: `${width}px`,
-      height: `${height}px`,
+      width: `${width || 60}px`,
+      height: `${height || 60}px`,
       animation: "App-logo-spin 2s linear infinite",
     }
   })

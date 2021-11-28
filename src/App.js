@@ -19,17 +19,21 @@ function App() {
     <Router>
       <NavBar></NavBar>
       <Routes>
-        <Route path="/"></Route>
+        <Route path="/" element={<QueryBlock />}></Route>
+        <Route path="/favorite_list" element={<FavoriteCardList favoriteCardList={cards}/>}>
+        </Route>
         <Route path="/login" element={<LoginForm />}></Route>
         <Route path="/register" element={<RegisterForm />}></Route>
       </Routes>
-      <React.Fragment>
-      <QueryBlock></QueryBlock>
-      <CardList cards={cards}></CardList>
-      </React.Fragment>
     </Router>
     </div>
   );
+}
+
+function FavoriteCardList(props){
+  const { favoriteCardList } = props;
+
+  return (<CardList cards={favoriteCardList}></CardList>)
 }
 
 function CardList(props){

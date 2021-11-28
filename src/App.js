@@ -25,17 +25,24 @@ function App() {
       </Routes>
       <React.Fragment>
       <QueryBlock></QueryBlock>
-      <Box display="flex" justifyContent="left" flexWrap="wrap" maxWidth="900px" mx="auto">
-      {
-        cards.map((card) => (
-          <PokemonCard card={card}></PokemonCard>
-        ))
-      }
-      </Box>
+      <CardList cards={cards}></CardList>
       </React.Fragment>
     </Router>
     </div>
   );
+}
+
+function CardList(props){
+  const { cards } = props;
+  return (
+    <Box display="flex" justifyContent="left" flexWrap="wrap" maxWidth="900px" mx="auto">
+    {
+      cards.map((card) => (
+        <PokemonCard card={card}></PokemonCard>
+      ))
+    }
+    </Box>
+  )
 }
 
 function LoginForm(){
@@ -182,7 +189,7 @@ function NavBar(props){
   return (
     <Box>
       <Box>FST PokemonTcg</Box>
-      <Button>Favorite list</Button>
+      <Button onClick={(e) => {navigate('/favorite_list')}}>Favorite list</Button>
       {isLogin && (
         <React.Fragment>
         <Button>
@@ -261,9 +268,7 @@ function QueryBlock(props){
       { isQuerying && (
         <Loader width={60} height={60} borderWidth={15}></Loader>
       )}
-      { queryResult && queryResult.length && (queryResult.map((card) => (
-        <PokemonCard card={card}></PokemonCard>
-      )))}
+      { queryResult && queryResult.length && (<CardList cards={queryResult}></CardList>)}
     </Box>
   );
 }

@@ -246,7 +246,7 @@ function QueryBlock(props){
       <TextField id="outlined-basic" label="rarity" variant="outlined" onChange={(e) => {setFormRarity(e.target.value)}}  />
       <Button onClick={queryCards}>Query</Button>
       { isQuerying && (
-        <Loader></Loader>
+        <Loader width={60} height={60}></Loader>
       )}
       { queryResult && queryResult.length && (queryResult.map((card) => (
         <PokemonCard card={card}></PokemonCard>
@@ -308,14 +308,15 @@ function Header(){
   );
 }
 
-function Loader(){
+function Loader(props){
+  const { width, height } = props;
   let useStyles = makeStyles({
     loader: {
       border: "16px solid #f3f3f3",
       borderTop: "16px solid #555555",
       borderRadius: "50%",
-      width: "60px",
-      height: "60px",
+      width: `${width}px`,
+      height: `${height}px`,
       animation: "App-logo-spin 2s linear infinite",
     }
   })

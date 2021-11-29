@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import logo from './logo.svg';
 import './App.css';
 import { Box, TextField, Button, Typography, Icon } from '@mui/material';
@@ -6,14 +6,35 @@ import { Card, CardMedia, CardContent, CardActions } from '@mui/material';
 import { BrowserRouter as Router, Routes, Route, Link, useNavigate } from 'react-router-dom';
 import { makeStyles } from '@mui/styles';
 import FavoriteIcon from '@mui/icons-material/Favorite';
+import Cookies from 'js-cookie'
 
 import request from 'request';
 
 import * as ponkemon_cards from './static/data/cards.json'
 let cards = ponkemon_cards.default.data;
 
+function setSessionCookie(session){
+  removeSessionCookie();
+  Cookies.set("session", JSON.stringify(session), {expires: 1000})
+}
 
-function App() {
+function removeSessionCookie(){
+  Cookies.remove("session");
+}
+
+function getSessionCookie(){
+  const sessionCookie = Cookies.get("session");
+  if(sessionCookie === "undefined") return {};
+  else return JSON.parse(sessionCookie);
+}
+
+const SessionContext = React.createContext(getSessionCookie());
+
+function App(props) {
+  useEffect(()=>{
+    console.log("useEffect in App")
+    console.log(getSessionCookie())
+  }, [])
   return (
     <div className="App">
     <Router>
@@ -50,14 +71,16 @@ function CardList(props){
 }
 
 function LoginForm(){
+  let navigate = useNavigate();
   let [isLoading, setIsLoading] = useState(false);
 
   let [formEmail, setFormEmail] = useState("");
   let [formPassword, setFormPassword] = useState("");
 
-  useEffect(() => {
-
-  },[])
+  useEffect(()=>{
+    console.log("useEffect in LoginForm")
+    console.log(getSessionCookie())
+  }, [])
 
   let loginUser = async () => {
     let loginPromise = new Promise(function(resolve, reject) {
@@ -74,7 +97,7 @@ function LoginForm(){
       };
       request(options, function (error, response) {
         if (error) throw error;
-        resolve(response.body);
+        resolve(JSON.parse(response.body));
       });
 
     });
@@ -84,6 +107,9 @@ function LoginForm(){
       setIsLoading(true)
       let res = await loginPromise;
       console.log('login res', res)
+
+      setSessionCookie({currentUser: res.user})
+      navigate('/');
     } catch (e) {
       console.log(e)
     } finally {
@@ -189,21 +215,20 @@ function RegisterForm(props){
 function NavBar(props){
   let navigate = useNavigate();
   let [isLogin,setIsLogin] = useState(false);
+  let [currentUser, setCurrentUser] = useState({});
+
+  useEffect(()=>{
+    const session = getSessionCookie();
+    if(session?.currentUser?.email){
+      setCurrentUser(currentUser);
+      console.log('currentUser', currentUser)
+      setIsLogin(true);
+    }
+  }, [navigate])
 
   return (
     <Box>
       <Box>FST PokemonTcg</Box>
-      <Button onClick={(e) => {navigate('/favorite_list')}}>Favorite list</Button>
-      {isLogin && (
-        <React.Fragment>
-        <Button>
-          <FavoriteIcon></FavoriteIcon>
-        </Button>
-        <Button onClick={(e)=>{
-          setIsLogin(false)
-        }}>Logout</Button>
-        </React.Fragment>
-      )}
       {!isLogin && (
         <React.Fragment>
         <Button onClick={(e)=>{
@@ -212,6 +237,17 @@ function NavBar(props){
         <Button onClick={(e) => {
           navigate('/login')
         }}>Login</Button>
+        </React.Fragment>
+      )}
+      {isLogin && (
+        <React.Fragment>
+        <Button onClick={(e) => {navigate('/favorite_list')}}>Favorite list<FavoriteIcon></FavoriteIcon></Button>
+        <Button onClick={(e)=>{
+          setSessionCookie(undefined)
+          navigate('/')
+          setIsLogin(false)
+        }}>Logout</Button>
+        <Box>{currentUser.email}</Box>
         </React.Fragment>
       )}
     </Box>

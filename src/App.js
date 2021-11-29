@@ -31,21 +31,24 @@ function getSessionCookie(){
 const SessionContext = React.createContext(getSessionCookie());
 
 function App(props) {
-  useEffect(()=>{
-    console.log("useEffect in App")
-    console.log(getSessionCookie())
-  }, [])
+  // const [session, setSession] = useState(getSessionCookie());
+  // useEffect(()=>{
+  //   // setSession(getSessionCookie())
+  //   console.log("useEffect in App")
+  //   // console.log(getSessionCookie())
+  // }, [session])
   return (
     <div className="App">
     <Router>
       <NavBar></NavBar>
+      <SessionContext.Provider value={getSessionCookie()}>
       <Routes>
         <Route path="/" element={<QueryBlock />}></Route>
-        <Route path="/favorite_list" element={<FavoriteCardList favoriteCardList={cards}/>}>
-        </Route>
+        <Route path="/favorite_list" element={<FavoriteCardList favoriteCardList={cards}/>}></Route>
         <Route path="/login" element={<LoginForm />}></Route>
         <Route path="/register" element={<RegisterForm />}></Route>
       </Routes>
+      </SessionContext.Provider>
     </Router>
     </div>
   );
@@ -217,8 +220,11 @@ function NavBar(props){
   let [isLogin,setIsLogin] = useState(false);
   let [currentUser, setCurrentUser] = useState({});
 
+  const session = useContext(SessionContext);
+
+
   useEffect(()=>{
-    const session = getSessionCookie();
+    // const session = getSessionCookie();
     if(session?.currentUser?.email){
       setCurrentUser(currentUser);
       console.log('currentUser', currentUser)

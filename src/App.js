@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import logo from './logo.svg';
 import './App.css';
 import { Box, TextField, Button, Typography, Icon } from '@mui/material';
@@ -28,8 +28,6 @@ function getSessionCookie(){
   else return JSON.parse(sessionCookie);
 }
 
-const SessionContext = React.createContext(getSessionCookie());
-
 function App(props) {
   // const [session, setSession] = useState(getSessionCookie());
   // useEffect(()=>{
@@ -41,14 +39,12 @@ function App(props) {
     <div className="App">
     <Router>
       <NavBar></NavBar>
-      <SessionContext.Provider value={getSessionCookie()}>
       <Routes>
         <Route path="/" element={<QueryBlock />}></Route>
         <Route path="/favorite_list" element={<FavoriteCardList favoriteCardList={cards}/>}></Route>
         <Route path="/login" element={<LoginForm />}></Route>
         <Route path="/register" element={<RegisterForm />}></Route>
       </Routes>
-      </SessionContext.Provider>
     </Router>
     </div>
   );
@@ -74,15 +70,15 @@ function CardList(props){
 }
 
 function LoginForm(){
-  let navigate = useNavigate();
+  const navigate = useNavigate();
   let [isLoading, setIsLoading] = useState(false);
 
   let [formEmail, setFormEmail] = useState("");
   let [formPassword, setFormPassword] = useState("");
 
   useEffect(()=>{
-    console.log("useEffect in LoginForm")
-    console.log(getSessionCookie())
+    const {currentUser} = getSessionCookie();
+    if(currentUser) navigate('/')
   }, [])
 
   let loginUser = async () => {
@@ -150,10 +146,16 @@ function LoginForm(){
 }
 
 function RegisterForm(props){
+  const navigate = useNavigate();
   let [isLoading, setIsLoading] = useState(false);
 
   let [formEmail, setFormEmail] = useState("");
   let [formPassword, setFormPassword] = useState("");
+
+  useEffect(()=>{
+    const {currentUser} = getSessionCookie();
+    if(currentUser) navigate('/')
+  }, [])
 
   let registerUser = async () => {
     let registerPromise = new Promise(function(resolve, reject) {
@@ -220,13 +222,10 @@ function NavBar(props){
   let [isLogin,setIsLogin] = useState(false);
   let [currentUser, setCurrentUser] = useState({});
 
-  const session = useContext(SessionContext);
-
-
   useEffect(()=>{
-    // const session = getSessionCookie();
+    const session = getSessionCookie();
     if(session?.currentUser?.email){
-      setCurrentUser(currentUser);
+      setCurrentUser(session.currentUser);
       console.log('currentUser', currentUser)
       setIsLogin(true);
     }
@@ -235,6 +234,9 @@ function NavBar(props){
   return (
     <Box>
       <Box>FST PokemonTcg</Box>
+      <Button onClick={(e)=>{
+        navigate('/')
+      }}>FST PokemonTcg</Button>
       {!isLogin && (
         <React.Fragment>
         <Button onClick={(e)=>{
@@ -250,8 +252,8 @@ function NavBar(props){
         <Button onClick={(e) => {navigate('/favorite_list')}}>Favorite list<FavoriteIcon></FavoriteIcon></Button>
         <Button onClick={(e)=>{
           setSessionCookie(undefined)
-          navigate('/')
           setIsLogin(false)
+          navigate('/')
         }}>Logout</Button>
         <Box>{currentUser.email}</Box>
         </React.Fragment>

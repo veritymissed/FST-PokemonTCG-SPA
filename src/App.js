@@ -342,6 +342,27 @@ function PokemonCard(props){
     currentUser.favorite_cards.push(card);
     console.log(currentUser)
     setSessionStorage({currentUser})
+
+    let updateUserPromise = new Promise(function(resolve) {
+      let { currentUser } = getSessionStorage();
+      let options = {
+        'method': 'PATCH',
+        'url': `http://localhost:3000/users/${currentUser.id}`,
+        'headers': {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        form: {
+          'favorite_cards': currentUser.favorite_cards
+        }
+      };
+      request(options, function (error, response) {
+        if (error) throw new error;
+        let responseObject = JSON.parse(response.body);
+        console.log(responseObject);
+        resolve(responseObject)
+      });
+
+    });
   }
 
   return(

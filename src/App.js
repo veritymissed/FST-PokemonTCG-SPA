@@ -13,28 +13,23 @@ import request from 'request';
 import * as ponkemon_cards from './static/data/cards.json'
 let cards = ponkemon_cards.default.data;
 
-function setSessionCookie(session){
-  removeSessionCookie();
-  Cookies.set("session", JSON.stringify(session), {expires: 1000})
+function setSessionStorage(session){
+  removeSessionStorage();
+  let jsonStringOfNewSession = JSON.stringify(session);
+  localStorage.setItem("session", jsonStringOfNewSession)
 }
 
-function removeSessionCookie(){
-  Cookies.remove("session");
+function removeSessionStorage(){
+  localStorage.removeItem("session");
 }
 
-function getSessionCookie(){
-  const sessionCookie = Cookies.get("session");
-  if(sessionCookie === "undefined") return {};
+function getSessionStorage(){
+  const sessionCookie = localStorage.getItem("session");
+  if(sessionCookie === "undefined" || !sessionCookie) return {};
   else return JSON.parse(sessionCookie);
 }
 
 function App(props) {
-  // const [session, setSession] = useState(getSessionCookie());
-  // useEffect(()=>{
-  //   // setSession(getSessionCookie())
-  //   console.log("useEffect in App")
-  //   // console.log(getSessionCookie())
-  // }, [session])
   return (
     <div className="App">
     <Router>
@@ -77,9 +72,9 @@ function LoginForm(){
   let [formPassword, setFormPassword] = useState("");
 
   useEffect(()=>{
-    const {currentUser} = getSessionCookie();
+    const {currentUser} = getSessionStorage();
     if(currentUser) navigate('/')
-  }, [])
+  }, [navigate])
 
   let loginUser = async () => {
     let loginPromise = new Promise(function(resolve, reject) {
@@ -107,7 +102,7 @@ function LoginForm(){
       let res = await loginPromise;
       console.log('login res', res)
 
-      setSessionCookie({currentUser: res.user})
+      setSessionStorage({currentUser: res.user})
       navigate('/');
     } catch (e) {
       console.log(e)
@@ -153,9 +148,9 @@ function RegisterForm(props){
   let [formPassword, setFormPassword] = useState("");
 
   useEffect(()=>{
-    const {currentUser} = getSessionCookie();
+    const {currentUser} = getSessionStorage();
     if(currentUser) navigate('/')
-  }, [])
+  }, [navigate])
 
   let registerUser = async () => {
     let registerPromise = new Promise(function(resolve, reject) {
@@ -223,10 +218,10 @@ function NavBar(props){
   let [currentUser, setCurrentUser] = useState({});
 
   useEffect(()=>{
-    const session = getSessionCookie();
+    const session = getSessionStorage();
     if(session?.currentUser?.email){
       setCurrentUser(session.currentUser);
-      console.log('currentUser', currentUser)
+      // console.log('currentUser', currentUser)
       setIsLogin(true);
     }
   }, [navigate])
@@ -251,7 +246,7 @@ function NavBar(props){
         <React.Fragment>
         <Button onClick={(e) => {navigate('/favorite_list')}}>Favorite list<FavoriteIcon></FavoriteIcon></Button>
         <Button onClick={(e)=>{
-          setSessionCookie(undefined)
+          removeSessionStorage();
           setIsLogin(false)
           navigate('/')
         }}>Logout</Button>
@@ -334,6 +329,20 @@ function PokemonCard(props){
     },
   }))
   let styleClass = useStyleClasses();
+  useEffect(()=>{
+    // removeSessionStorage();
+  },[])
+
+  const addToFavoriteList = () => {
+    // console.log(card)
+    let session = getSessionStorage();
+    const { currentUser } = session;
+    if(!session.currentUser) return;
+    console.log(currentUser?.favorite_cards)
+    currentUser.favorite_cards.push(card);
+    console.log(currentUser)
+    setSessionStorage({currentUser})
+  }
 
   return(
   <Card sx={{ width: 200 }} className={styleClass.card_style}>
@@ -352,26 +361,13 @@ function PokemonCard(props){
       <Typography variant="subtitle2" gutterBottom component="div">
         Rarity: {card.rarity|| 'No data'}
       </Typography>
+      <Box display="flex" flexWrap="wrap" justifyContent="flex-end">
+        <Button onClick={addToFavoriteList}>
+          <FavoriteIcon></FavoriteIcon>
+        </Button>
+      </Box>
     </CardContent>
   </Card>)
-}
-
-function Header(){
-  return (
-  <header className="App-header">
-    <img src={logo} className="App-logo" alt="logo" />
-    <p>
-      Edit <code>src/App.js</code> and save to reload.
-    </p>
-    <a
-      className="App-link"
-      href="https://reactjs.org"
-      target="_blank"
-      rel="noopener noreferrer"
-    >
-    </a>
-  </header>
-  );
 }
 
 function Loader(props){

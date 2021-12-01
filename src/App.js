@@ -312,8 +312,9 @@ function QueryBlock(props){
     console.log('formRarity', formRarity)
 
     let queryString = '';
-    if(formName.length) queryString += `name:*${formName}* `
-    if(formType.length) queryString += `types:${formType} `
+    if(formName.length) queryString += `name:*${formName}* `;
+    if(formType.length) queryString += `types:${formType} `;
+    if(formRarity.length) queryString += `rarity:${formRarity} `
 
     console.log('queryString', queryString)
     return new Promise(function(resolve) {
@@ -354,6 +355,7 @@ function QueryBlock(props){
             setFormType(e.target.value);
           }}
         >
+          <MenuItem value={''}>None</MenuItem>
           {types.map((type) => (
             <MenuItem value={type}>{type}</MenuItem>
           ))}
@@ -371,6 +373,7 @@ function QueryBlock(props){
             setFormRarity(e.target.value);
           }}
         >
+          <MenuItem value={''}>None</MenuItem>
           {rarities.map((rarity) => (
             <MenuItem value={rarity}>{rarity}</MenuItem>
           ))}

@@ -3,6 +3,11 @@ import logo from './logo.svg';
 import './App.css';
 import { Box, TextField, Button, Typography, Icon } from '@mui/material';
 import { Card, CardMedia, CardContent, CardActions } from '@mui/material';
+import { FormControl } from '@mui/material';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import Select from '@mui/material/Select';
+
 import { BrowserRouter as Router, Routes, Route, Link, useNavigate } from 'react-router-dom';
 import { makeStyles } from '@mui/styles';
 import FavoriteIcon from '@mui/icons-material/Favorite';
@@ -12,10 +17,21 @@ import * as _ from 'lodash';
 
 import request from 'request';
 
+import * as raritiesEsModule from './static/rarities.json';
+import * as supertypesEsModule from './static/supertypes.json';
+import * as typesEsModule from './static/types.json';
 import * as ponkemon_cards from './static/data/cards.json'
 let cards = ponkemon_cards.default.data;
 
+const rarities = raritiesEsModule.default.data;
+const supertypes = supertypesEsModule.default.data;
+const types = typesEsModule.default.data;
+
 var howOfftenAppUseEffect = 0;
+
+console.log('rarities', rarities)
+console.log('supertypes', supertypes)
+console.log('types', types)
 
 function setSessionStorage(session){
   removeSessionStorage();
@@ -281,7 +297,7 @@ function QueryBlock(props){
   const [isQuerying, setIsQuerying] = useState(false);
 
   const [formName, setFormDataName] = useState('');
-  const [formSuperType, setFormSuperType] = useState('');
+  const [formType, setFormType] = useState('');
   const [formHp, setFormHp] = useState('');
   const [formRarity, setFormRarity] = useState('');
   const [queryResult, setQueryResult] = useState(null);
@@ -291,19 +307,22 @@ function QueryBlock(props){
     else setIsQuerying(true);
 
     console.log('formName', formName)
-    console.log('formSuperType', formSuperType)
+    console.log('formType', formType)
     console.log('formHp', formHp)
     console.log('formRarity', formRarity)
 
     let queryString = '';
-    if(formName.length) queryString += `name:${formName}`
+    if(formName.length) queryString += `name:*${formName}* `
+    if(formType.length) queryString += `types:${formType} `
 
+    console.log('queryString', queryString)
     return new Promise(function(resolve) {
       try {
         request({
           method: 'GET',
-          uri: `https://api.pokemontcg.io/v2/cards/?q=${queryString}`,
+          uri: `https://api.pokemontcg.io/v2/cards/?q=${queryString}&pageSize=20`,
           q: queryString,
+          pageSize: 20,
         }, function(err, res, body){
           if(err) throw err
           else resolve(JSON.parse(body))
@@ -324,9 +343,39 @@ function QueryBlock(props){
   return (
     <Box>
       <TextField id="outlined-basic" label="name" variant="outlined" onChange={(e) => {setFormDataName(e.target.value)}} />
-      <TextField id="outlined-basic" label="supertype" variant="outlined" onChange={(e) => {setFormSuperType(e.target.value)}}   />
+      <FormControl>
+        <InputLabel id="demo-simple-select-label">Type</InputLabel>
+        <Select
+          labelId="demo-simple-select-label"
+          id="demo-simple-select"
+          value={formType}
+          label="Type"
+          onChange={(e)=>{
+            setFormType(e.target.value);
+          }}
+        >
+          {types.map((type) => (
+            <MenuItem value={type}>{type}</MenuItem>
+          ))}
+        </Select>
+      </FormControl>
       <TextField id="outlined-basic" label="hp" variant="outlined" onChange={(e) => {setFormHp(e.target.value)}}  />
-      <TextField id="outlined-basic" label="rarity" variant="outlined" onChange={(e) => {setFormRarity(e.target.value)}}  />
+      <FormControl>
+        <InputLabel id="demo-simple-select-label">Rarity</InputLabel>
+        <Select
+          labelId="demo-simple-select-label"
+          id="demo-simple-select"
+          value={formRarity}
+          label="Rarity"
+          onChange={(e)=>{
+            setFormRarity(e.target.value);
+          }}
+        >
+          {rarities.map((rarity) => (
+            <MenuItem value={rarity}>{rarity}</MenuItem>
+          ))}
+        </Select>
+      </FormControl>
       <Button onClick={queryCards}>Query</Button>
       { isQuerying && (
         <Loader width={60} height={60} borderWidth={15}></Loader>
@@ -427,6 +476,11 @@ function PokemonCard(props){
       <Typography variant="subtitle2" gutterBottom component="div">
         Supertype: {card.supertype|| 'No data'}
       </Typography>
+      {card.types && card.types.length > 0 && (
+       <Typography variant="subtitle2" gutterBottom component="div">
+          Type: {card.types|| 'No data'}
+        </Typography>
+      )}
       <Typography variant="subtitle2" gutterBottom component="div">
         HP: {card.hp || 'No data'}
       </Typography>

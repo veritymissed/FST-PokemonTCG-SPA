@@ -7,12 +7,15 @@ import { BrowserRouter as Router, Routes, Route, Link, useNavigate } from 'react
 import { makeStyles } from '@mui/styles';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import DeleteIcon from '@mui/icons-material/Delete';
-import Cookies from 'js-cookie'
+import Cookies from 'js-cookie';
+import * as _ from 'lodash';
 
 import request from 'request';
 
 import * as ponkemon_cards from './static/data/cards.json'
 let cards = ponkemon_cards.default.data;
+
+var howOfftenAppUseEffect = 0;
 
 function setSessionStorage(session){
   removeSessionStorage();
@@ -37,8 +40,10 @@ function getCurrentUser(){
 
 function App(props) {
   useEffect(() => {
-    console.log("how often APP useEffect")
-  },[])
+    howOfftenAppUseEffect++;
+    console.log("how often APP useEffect - ", howOfftenAppUseEffect);
+  },[]);
+
   return (
     <div className="App">
     <Router>
@@ -55,18 +60,24 @@ function App(props) {
 }
 
 function FavoriteCardList(props){
+  let navigate = useNavigate();
   const { favoriteCardList } = props;
+  const [userIsLogin, setUserIsLogin] = useState(!_.isEmpty(getCurrentUser()));
+  useEffect(() => {
+    if(!userIsLogin) navigate('/');
+  },[navigate]);
 
-  return (<CardList cards={favoriteCardList}></CardList>)
+  return (<CardList userIsLogin={userIsLogin} cards={favoriteCardList}></CardList>)
 }
 
 function CardList(props){
-  const { cards } = props;
+  const { cards, userIsLogin } = props;
+
   return (
     <Box display="flex" justifyContent="left" flexWrap="wrap" maxWidth="900px" mx="auto">
     {
       cards.map((card) => (
-        <PokemonCard card={card}></PokemonCard>
+        <PokemonCard card={card} userIsLogin={userIsLogin}></PokemonCard>
       ))
     }
     </Box>
@@ -326,7 +337,8 @@ function QueryBlock(props){
 }
 
 function PokemonCard(props){
-  const { card } = props;
+  const { card, userIsLogin } = props;
+
   let [isUpdating, setIsUpdating] = useState(false);
   let useStyleClasses = makeStyles((theme) => ({
     card_style: {
@@ -364,7 +376,8 @@ function PokemonCard(props){
     if(isUpdating) return
     // console.log(`Delete ponkemon card id = ${card.id} from list`)
     const currentUser = getCurrentUser();
-    if(!currentUser) return;
+    if(_.isEmpty(currentUser)) return;
+
     let foundIndex = currentUser.favorite_cards.findIndex((cardInCurrentUser) => cardInCurrentUser.id === card.id);
     if(foundIndex < 0) return;
     // console.log('currentUser.favorite_cards', currentUser.favorite_cards)
@@ -383,12 +396,13 @@ function PokemonCard(props){
   };
 
   const addToFavoriteList = async () => {
+    if(isUpdating) return
+
     const currentUser = getCurrentUser();
-    if(!currentUser) return;
+    if(_.isEmpty(currentUser)) return;
 
     let foundIndex = currentUser.favorite_cards.findIndex((cardInCurrentUser) => cardInCurrentUser.id === card.id);
     if(foundIndex >= 0) return;
-    // console.log('currentUser.favorite_cards', currentUser.favorite_cards)
 
     currentUser.favorite_cards.push(card);
     setSessionStorage({currentUser})
@@ -419,14 +433,16 @@ function PokemonCard(props){
       <Typography variant="subtitle2" gutterBottom component="div">
         Rarity: {card.rarity|| 'No data'}
       </Typography>
-      <Box display="flex" flexWrap="wrap" justifyContent="flex-end">
-        <Button onClick={addToFavoriteList}>
-          <FavoriteIcon></FavoriteIcon>
-        </Button>
-        <Button onClick={deleteFromFavoriteList} color="info">
-          <DeleteIcon></DeleteIcon>
-        </Button>
-      </Box>
+      {userIsLogin && (
+        <Box display="flex" flexWrap="wrap" justifyContent="flex-end">
+          <Button onClick={addToFavoriteList}>
+            <FavoriteIcon></FavoriteIcon>
+          </Button>
+          <Button onClick={deleteFromFavoriteList} color="info">
+            <DeleteIcon></DeleteIcon>
+          </Button>
+        </Box>
+      )}
     </CardContent>
   </Card>)
 }

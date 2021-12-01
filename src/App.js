@@ -6,6 +6,7 @@ import { Card, CardMedia, CardContent, CardActions } from '@mui/material';
 import { BrowserRouter as Router, Routes, Route, Link, useNavigate } from 'react-router-dom';
 import { makeStyles } from '@mui/styles';
 import FavoriteIcon from '@mui/icons-material/Favorite';
+import DeleteIcon from '@mui/icons-material/Delete';
 import Cookies from 'js-cookie'
 
 import request from 'request';
@@ -29,7 +30,15 @@ function getSessionStorage(){
   else return JSON.parse(sessionCookie);
 }
 
+function getCurrentUser(){
+  const {currentUser} = getSessionStorage();
+  return currentUser;
+}
+
 function App(props) {
+  useEffect(() => {
+    console.log("how often APP useEffect")
+  },[])
   return (
     <div className="App">
     <Router>
@@ -318,6 +327,7 @@ function QueryBlock(props){
 
 function PokemonCard(props){
   const { card } = props;
+  let [isUpdating, setIsUpdating] = useState(false);
   let useStyleClasses = makeStyles((theme) => ({
     card_style: {
       marginTop: '10px',
@@ -329,40 +339,67 @@ function PokemonCard(props){
     },
   }))
   let styleClass = useStyleClasses();
-  useEffect(()=>{
-    // removeSessionStorage();
-  },[])
 
-  const addToFavoriteList = () => {
-    // console.log(card)
-    let session = getSessionStorage();
-    const { currentUser } = session;
-    if(!session.currentUser) return;
-    console.log(currentUser?.favorite_cards)
-    currentUser.favorite_cards.push(card);
-    console.log(currentUser)
-    setSessionStorage({currentUser})
-
-    let updateUserPromise = new Promise(function(resolve) {
-      let { currentUser } = getSessionStorage();
+  const getUpdateUserPromise = function(updatingUser, form){
+    return new Promise(function(resolve) {
       let options = {
         'method': 'PATCH',
-        'url': `http://localhost:3000/users/${currentUser.id}`,
+        'url': `http://localhost:3000/users/${updatingUser.id}`,
         'headers': {
-          'Content-Type': 'application/x-www-form-urlencoded',
+          'Content-Type': 'application/json',
         },
-        form: {
-          'favorite_cards': currentUser.favorite_cards
-        }
+        body: JSON.stringify(form)
       };
       request(options, function (error, response) {
-        if (error) throw new error;
+        if (error) throw error;
         let responseObject = JSON.parse(response.body);
         console.log(responseObject);
         resolve(responseObject)
       });
 
     });
+  }
+
+  const deleteFromFavoriteList = async () => {
+    if(isUpdating) return
+    // console.log(`Delete ponkemon card id = ${card.id} from list`)
+    const currentUser = getCurrentUser();
+    if(!currentUser) return;
+    let foundIndex = currentUser.favorite_cards.findIndex((cardInCurrentUser) => cardInCurrentUser.id === card.id);
+    if(foundIndex < 0) return;
+    // console.log('currentUser.favorite_cards', currentUser.favorite_cards)
+    currentUser.favorite_cards.splice(foundIndex, 1);
+    setSessionStorage({currentUser})
+    // console.log('currentUser.favorite_cards', currentUser.favorite_cards)
+    // console.log('found', found)
+    try {
+      setIsUpdating(true);
+      await getUpdateUserPromise(currentUser, {favorite_cards: currentUser.favorite_cards || []})
+    } catch (e) {
+      console.log(e)
+    } finally {
+      setIsUpdating(false);
+    }
+  };
+
+  const addToFavoriteList = async () => {
+    const currentUser = getCurrentUser();
+    if(!currentUser) return;
+
+    let foundIndex = currentUser.favorite_cards.findIndex((cardInCurrentUser) => cardInCurrentUser.id === card.id);
+    if(foundIndex >= 0) return;
+    // console.log('currentUser.favorite_cards', currentUser.favorite_cards)
+
+    currentUser.favorite_cards.push(card);
+    setSessionStorage({currentUser})
+
+    try {
+      await getUpdateUserPromise(currentUser, {favorite_cards: currentUser.favorite_cards || []})
+    } catch (e) {
+      console.log(e)
+    } finally {
+      setIsUpdating(false);
+    }
   }
 
   return(
@@ -385,6 +422,9 @@ function PokemonCard(props){
       <Box display="flex" flexWrap="wrap" justifyContent="flex-end">
         <Button onClick={addToFavoriteList}>
           <FavoriteIcon></FavoriteIcon>
+        </Button>
+        <Button onClick={deleteFromFavoriteList} color="info">
+          <DeleteIcon></DeleteIcon>
         </Button>
       </Box>
     </CardContent>

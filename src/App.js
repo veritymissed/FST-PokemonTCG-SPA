@@ -7,6 +7,7 @@ import { FormControl } from '@mui/material';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
+import Slider from '@mui/material/Slider';
 
 import { BrowserRouter as Router, Routes, Route, Link, useNavigate } from 'react-router-dom';
 import { makeStyles } from '@mui/styles';
@@ -298,7 +299,7 @@ function QueryBlock(props){
 
   const [formName, setFormDataName] = useState('');
   const [formType, setFormType] = useState('');
-  const [formHp, setFormHp] = useState('');
+  const [formHp, setFormHp] = useState([0, 500]);
   const [formRarity, setFormRarity] = useState('');
   const [queryResult, setQueryResult] = useState(null);
 
@@ -315,6 +316,8 @@ function QueryBlock(props){
     if(formName.length) queryString += `name:*${formName}* `;
     if(formType.length) queryString += `types:${formType} `;
     if(formRarity.length) queryString += `rarity:${formRarity} `
+
+    queryString += `hp:[${formHp[0]} TO ${formHp[1]}] `
 
     console.log('queryString', queryString)
     return new Promise(function(resolve) {
@@ -361,7 +364,20 @@ function QueryBlock(props){
           ))}
         </Select>
       </FormControl>
-      <TextField id="outlined-basic" label="hp" variant="outlined" onChange={(e) => {setFormHp(e.target.value)}}  />
+
+      <Box width="500px">
+      <Slider
+        min={0} max={500}
+        getAriaLabel={() => 'HP range'}
+        value={formHp}
+        onChange={(e, newValue)=>{
+          setFormHp(newValue)
+        }}
+        valueLabelDisplay="auto"
+        getAriaValueText={(e) => `${formHp}`}
+      />
+      </Box>
+
       <FormControl>
         <InputLabel id="demo-simple-select-label">Rarity</InputLabel>
         <Select

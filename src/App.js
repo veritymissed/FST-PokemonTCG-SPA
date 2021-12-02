@@ -301,30 +301,88 @@ function QueryBlock(props){
   const [formType, setFormType] = useState('');
   const [formHp, setFormHp] = useState([0, 500]);
   const [formRarity, setFormRarity] = useState('');
+
+  const [lastTimeQueryForm, setLastTimeQueryForm] = useState({});
+
   const [queryResult, setQueryResult] = useState(null);
+  const [queryResultCardsArray, setQueryResultCardsArray] = useState([]);
+  const [canLoadMore, setCanLoadMore] = useState(false);
+
+  const loadMoreCards = async () => {
+    try {
+      if(isQuerying) return;
+      else setIsQuerying(true);
+
+      let res = await queryCardsAPI(lastTimeQueryForm, queryResult.page + 1);
+      setQueryResultCardsArray([...queryResultCardsArray, ...res.data]);
+      setQueryResult(res);
+
+      //same as in queryCards
+      if(res.data.length && res.count === res.pageSize) {
+        setCanLoadMore(true);
+        setLastTimeQueryForm(lastTimeQueryForm);
+      }
+      else setCanLoadMore(false);
+    } catch (e) {
+      console.log(e);
+    } finally {
+      setIsQuerying(false);
+    }
+  };
 
   const queryCards = async () => {
-    if(isQuerying) return;
-    else setIsQuerying(true);
+    try {
+      if(isQuerying) return;
+      else setIsQuerying(true);
 
-    console.log('formName', formName)
-    console.log('formType', formType)
-    console.log('formHp', formHp)
-    console.log('formRarity', formRarity)
+      let form = {
+        name: formName,
+        type: formType,
+        hp: formHp,
+        rarity: formRarity
+      };
+      let res = await queryCardsAPI(form);
+      setQueryResultCardsArray(res.data);
+      setQueryResult(res);
 
+      //same as in loadMoreCards
+      if(res.data.length && res.count === res.pageSize) {
+        setCanLoadMore(true);
+        setLastTimeQueryForm(form);
+      }
+      else setCanLoadMore(false);
+    } catch (e) {
+      setQueryResultCardsArray([]);
+      console.log(e);
+    } finally {
+      setIsQuerying(false);
+    }
+  };
+
+  const queryCardsAPI = async (form = {
+    name: '',
+    type: '',
+    formHp: [0,500],
+    rarity: ''
+  }, page = 1) => {
+    console.log('form.name', form.name)
+    console.log('form.type', form.type)
+    console.log('form.hp', form.hp)
+    console.log('form.rarity', form.rarity)
+    console.log('page', page)
     let queryString = '';
-    if(formName.length) queryString += `name:"*${formName}*" `;
-    if(formType.length) queryString += `types:${formType} `;
-    if(formRarity.length) queryString += `rarity:"${formRarity}" `
+    if(form.name.length) queryString += `name:"*${form.name}*" `;
+    if(form.type.length) queryString += `types:${form.type} `;
+    if(form.rarity.length) queryString += `rarity:"${form.rarity}" `
 
-    queryString += `hp:[${formHp[0]} TO ${formHp[1]}] `
+    queryString += `hp:[${form.hp[0]} TO ${form.hp[1]}] `
 
     console.log('queryString', queryString)
     return new Promise(function(resolve) {
       try {
         request({
           method: 'GET',
-          uri: `https://api.pokemontcg.io/v2/cards/?q=${queryString}&pageSize=20`,
+          uri: `https://api.pokemontcg.io/v2/cards/?q=${queryString}&pageSize=4&page=${page}`,
           q: queryString,
           pageSize: 20,
         }, function(err, res, body){
@@ -335,14 +393,7 @@ function QueryBlock(props){
         throw e
       }
     })
-    .then((res) => {
-      setQueryResult(res.data);
-    })
-    .catch((error) => console.log(error))
-    .finally(() => {
-      setIsQuerying(false);
-    });
-  }
+  };
 
   return (
     <Box>
@@ -395,11 +446,18 @@ function QueryBlock(props){
           ))}
         </Select>
       </FormControl>
-      <Button onClick={queryCards}>Query</Button>
+      <Button onClick={(e)=>{
+        queryCards();
+      }}>Query</Button>
       { isQuerying && (
         <Loader width={60} height={60} borderWidth={15}></Loader>
       )}
-      { queryResult && queryResult.length && (<CardList cards={queryResult}></CardList>)}
+      { queryResultCardsArray.length > 0 && (<CardList cards={queryResultCardsArray}></CardList>)}
+      { canLoadMore && (
+        <Button onClick={(e)=>{
+          loadMoreCards()
+        }}>Load more</Button>
+      )}
     </Box>
   );
 }

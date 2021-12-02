@@ -295,7 +295,7 @@ function NavBar(props){
 }
 
 function QueryBlock(props){
-  const [isQuerying, setIsQuerying] = useState(false);//querying API
+  const [isQuerying, setIsQuerying] = useState(false);//is querying API state now
 
   const [formName, setFormDataName] = useState('');
   const [formType, setFormType] = useState('');
@@ -339,12 +339,17 @@ function QueryBlock(props){
       if(isQuerying) return;
       else setIsQuerying(true);
 
+      //Controller loader animation, load more button and remove last time querying cards
+      setQueryResultCardsArray([]);
+      setCanLoadMore(false);
+
       let form = {
         name: formName,
         type: formType,
         hp: formHp,
         rarity: formRarity
       };
+
       let res = await queryCardsAPI(form);
       setQueryResultCardsArray(res.data);
       setQueryResult(res);
@@ -449,19 +454,22 @@ function QueryBlock(props){
             <MenuItem value={rarity}>{rarity}</MenuItem>
           ))}
         </Select>
-      </FormControl>
-      <Button onClick={(e)=>{
-        queryCards();
-      }}>Query</Button>
-      { isQuerying && (
-        <Loader width={60} height={60} borderWidth={15}></Loader>
-      )}
-      { queryResultCardsArray.length > 0 && (<CardList cards={queryResultCardsArray}></CardList>)}
-      { canLoadMore && !isLoadingMore && (
         <Button onClick={(e)=>{
-          loadMoreCards()
-        }}>Load more</Button>
-      )}
+          queryCards();
+        }}>Query</Button>
+      </FormControl>
+
+      { queryResultCardsArray.length > 0 && (<CardList cards={queryResultCardsArray}></CardList>)}
+      <Box display="flex" justifyContent="center">
+        { isQuerying && (
+          <Loader width={60} height={60} borderWidth={15}></Loader>
+        )}
+        { canLoadMore && !isLoadingMore && (
+          <Button onClick={(e)=>{
+            loadMoreCards()
+          }}>Load more</Button>
+        )}
+      </Box>
     </Box>
   );
 }

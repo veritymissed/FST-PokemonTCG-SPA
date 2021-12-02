@@ -313,9 +313,9 @@ function QueryBlock(props){
     console.log('formRarity', formRarity)
 
     let queryString = '';
-    if(formName.length) queryString += `name:*${formName}* `;
+    if(formName.length) queryString += `name:"*${formName}*" `;
     if(formType.length) queryString += `types:${formType} `;
-    if(formRarity.length) queryString += `rarity:${formRarity} `
+    if(formRarity.length) queryString += `rarity:"${formRarity}" `
 
     queryString += `hp:[${formHp[0]} TO ${formHp[1]}] `
 

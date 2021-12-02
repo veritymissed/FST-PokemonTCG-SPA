@@ -295,7 +295,7 @@ function NavBar(props){
 }
 
 function QueryBlock(props){
-  const [isQuerying, setIsQuerying] = useState(false);
+  const [isQuerying, setIsQuerying] = useState(false);//querying API
 
   const [formName, setFormDataName] = useState('');
   const [formType, setFormType] = useState('');
@@ -307,12 +307,15 @@ function QueryBlock(props){
   const [queryResult, setQueryResult] = useState(null);
   const [queryResultCardsArray, setQueryResultCardsArray] = useState([]);
   const [canLoadMore, setCanLoadMore] = useState(false);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
 
   const loadMoreCards = async () => {
     try {
       if(isQuerying) return;
       else setIsQuerying(true);
 
+
+      setIsLoadingMore(true);
       let res = await queryCardsAPI(lastTimeQueryForm, queryResult.page + 1);
       setQueryResultCardsArray([...queryResultCardsArray, ...res.data]);
       setQueryResult(res);
@@ -327,6 +330,7 @@ function QueryBlock(props){
       console.log(e);
     } finally {
       setIsQuerying(false);
+      setIsLoadingMore(false);
     }
   };
 
@@ -453,7 +457,7 @@ function QueryBlock(props){
         <Loader width={60} height={60} borderWidth={15}></Loader>
       )}
       { queryResultCardsArray.length > 0 && (<CardList cards={queryResultCardsArray}></CardList>)}
-      { canLoadMore && (
+      { canLoadMore && !isLoadingMore && (
         <Button onClick={(e)=>{
           loadMoreCards()
         }}>Load more</Button>

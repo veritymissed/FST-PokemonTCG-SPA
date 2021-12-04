@@ -37,7 +37,7 @@ const types = typesEsModule.default.data;
 
 const QUERYING_API_PAGE_SIZE = 8;
 
-const initialState = {
+const initialUserState = {
   isLogin: false,
   currentUserEmail: null,
   favorite_cards: [],
@@ -51,8 +51,11 @@ function reducer(state, action) {
       const { isLogin, ...updatePayload } = action.payload;
       console.log('updatePayload', updatePayload);
       return { isLogin: true , ...updatePayload };
+    case 'update_favorite_cards':
+      const { favorite_cards, ...oldState} = state;
+      return { ...oldState, favorite_cards: action.payload.favorite_cards };
     case 'logout':
-      return initialState;
+      return initialUserState;
     default:
       throw new Error();
   }
@@ -102,7 +105,7 @@ const getUpdateUserPromise = function(updatingUser, form){
 }
 
 function App(props) {
-  const [userState, dispatch] = useReducer(reducer, initialState);
+  const [userState, dispatch] = useReducer(reducer, initialUserState);
   useEffect(() => {
     //
     let currentUserInLocalStorage = getCurrentUser();
@@ -132,30 +135,26 @@ function App(props) {
 }
 
 function FavoriteCardList(props){
-  let navigate = useNavigate();
+  const { userState, dispatch } = useContext(UserContext);
+  console.log('userState in FavoriteCardList', userState);
 
-  // let [userIsLogin, setUserIsLogin] = useState(false);
-  let [favoriteCardList, setFavoriteCardList] = useState([]);
+  let navigate = useNavigate();
+  useEffect(() => {
+    if(!userState.isLogin) navigate('/');
+  },[]);
+
+  let [favoriteCardList, setFavoriteCardList] = useState(userState.favorite_cards);
 
   let [isUpdating, setIsUpdating] = useState(false);
 
-  let currentUser = getCurrentUser();
-
-  let userIsLogin = false;
-  if(_.isEmpty(currentUser)) currentUser = false;
-  else {
-    userIsLogin = true;
-    console.log(currentUser)
-  }
-
   useEffect(()=>{
-    setFavoriteCardList(currentUser.favorite_cards);
+    // setFavoriteCardList(currentUser.favorite_cards);
   },[])
 
   let addTo = async (cardObject) => {
     if(isUpdating) return
 
-    const currentUser = getCurrentUser();
+    let currentUser = getCurrentUser();
     if(_.isEmpty(currentUser)) return;
 
     let foundIndex = currentUser.favorite_cards.findIndex((cardInCurrentUser) => cardInCurrentUser.id === cardObject.id);
@@ -176,7 +175,7 @@ function FavoriteCardList(props){
   let removeFrom = async (cardId) => {
     console.log(`card id = ${cardId}`);
     if(isUpdating) return
-    const currentUser = getCurrentUser();
+    let currentUser = getCurrentUser();
     if(_.isEmpty(currentUser)) return;
 
     let foundIndex = currentUser.favorite_cards.findIndex((cardInCurrentUser) => cardInCurrentUser.id === cardId);
@@ -194,16 +193,12 @@ function FavoriteCardList(props){
     }
   };
 
-  useEffect(() => {
-    if(!userIsLogin) navigate('/');
-  },[navigate]);
-
-  return (<CardList userIsLogin={userIsLogin} cards={favoriteCardList}
+  return (<CardList cards={favoriteCardList}
     addTo={addTo} removeFrom={removeFrom}></CardList>)
 }
 
 function CardList(props){
-  const { cards, userIsLogin, addTo, removeFrom } = props;
+  const { cards, addTo, removeFrom } = props;
 
   return (
     <Box display="flex" justifyContent="left" flexWrap="wrap" maxWidth="900px" mx="auto">
@@ -258,7 +253,7 @@ function LoginForm(){
       console.log('login res', res)
 
       setSessionStorage({currentUser: res.user})
-      dispatch({type: 'login', payload: {currentUserEmail: res.user.email, favorite_cards: res.user.favorite_cards, fuck: 'fuck' }})
+      dispatch({type: 'login', payload: { currentUserEmail: res.user.email, favorite_cards: res.user.favorite_cards }})
       navigate('/');
     } catch (e) {
       console.log(e)
@@ -645,7 +640,8 @@ function PokemonCard(props){
   const { card,  addTo, removeFrom } = props;
 
   const { userState, dispatch } = useContext(UserContext);
-  console.log('userState in PokemonCard', userState);
+
+  let [isInFavoriteListPage, setIsInFavoriteListPage] = useState(useLocation().pathname === '/favorite_list');
 
   let [isUpdating, setIsUpdating] = useState(false);
   let useStyleClasses = makeStyles((theme) => ({
@@ -682,8 +678,7 @@ function PokemonCard(props){
       <Typography variant="subtitle2" gutterBottom component="div">
         Rarity: {card.rarity|| 'No data'}
       </Typography>
-      {userState.isLogin && (
-        <>
+      {userState.isLogin && !isInFavoriteListPage && (
         <Box display="flex" justifyContent="flex-end">
           <IconButton color="primary" onClick={(e)=>{
             removeFrom(card.id);
@@ -696,14 +691,15 @@ function PokemonCard(props){
           <FavoriteBorderIcon></FavoriteBorderIcon>
           </IconButton>
         </Box>
+      )}
+      {userState.isLogin && isInFavoriteListPage && (
         <Box display="flex" flexWrap="wrap" justifyContent="flex-end">
-          <Button onClick={(e) => {
-            removeFrom(card.id);
-          }} color="info">
-            <DeleteIcon></DeleteIcon>
-          </Button>
+        <Button onClick={(e) => {
+          removeFrom(card.id);
+        }} color="info">
+        <DeleteIcon></DeleteIcon>
+        </Button>
         </Box>
-        </>
       )}
     </CardContent>
   </Card>)

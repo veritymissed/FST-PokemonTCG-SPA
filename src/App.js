@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useReducer } from 'react';
+import React, { useState, useEffect, useReducer, useContext } from 'react';
 import logo from './logo.svg';
 import './App.css';
 import { Box, TextField, Button, Typography, Icon } from '@mui/material';
@@ -9,7 +9,7 @@ import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
 import Slider from '@mui/material/Slider';
 
-import { BrowserRouter as Router, Routes, Route, Link, useNavigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Link, useNavigate, useLocation } from 'react-router-dom';
 import { makeStyles } from '@mui/styles';
 import IconButton from '@material-ui/core/IconButton';
 import FavoriteIcon from '@mui/icons-material/Favorite';
@@ -44,22 +44,21 @@ const initialState = {
 };
 
 function reducer(state, action) {
-  console.log('state', state)
+  console.log('state', state);
   console.log('action', action);
   switch (action.type) {
     case 'login':
       const { isLogin, ...updatePayload } = action.payload;
-      console.log('updatePayload', updatePayload)
-      console.log({
-        isLogin: true , ...updatePayload
-      })
+      console.log('updatePayload', updatePayload);
       return { isLogin: true , ...updatePayload };
     case 'logout':
-      return initialState
+      return initialState;
     default:
       throw new Error();
   }
 };
+
+const UserContext = React.createContext(null);
 
 function setSessionStorage(session){
   removeSessionStorage();
@@ -103,23 +102,20 @@ const getUpdateUserPromise = function(updatingUser, form){
 }
 
 function App(props) {
+  const [userState, dispatch] = useReducer(reducer, initialState);
   useEffect(() => {
+    //
+    let currentUserInLocalStorage = getCurrentUser();
+    if(currentUserInLocalStorage){
+      dispatch({type: 'login', payload: {currentUserEmail: currentUserInLocalStorage.email, favorite_cards: currentUserInLocalStorage.favorite_cards }});
+    }
+    //
   },[]);
 
-  //
-  const [state, dispatch] = useReducer(reducer, initialState)
-  console.log('state', state)
-  let fuckCurrentUser = getCurrentUser();
-  console.log('fuckCurrentUser', fuckCurrentUser)
-  //
 
   return (
     <div className="App">
-      <Box>
-      isLogin: {state.isLogin}
-      CurrentUser: {state.currentUserEmail}
-      <button onClick={() => dispatch({type: 'login', payload: {currentUserEmail: fuckCurrentUser.email, favorite_cards: fuckCurrentUser.favorite_cards }})}>Login</button>
-      </Box>
+    <UserContext.Provider value={{userState, dispatch}}>
     <Router>
       <NavBar></NavBar>
       <Routes>
@@ -127,8 +123,10 @@ function App(props) {
         <Route path="/favorite_list" element={<FavoriteCardList/>}></Route>
         <Route path="/login" element={<LoginForm />}></Route>
         <Route path="/register" element={<RegisterForm />}></Route>
+        <Route path="/logout" element={<Logout />}></Route>
       </Routes>
     </Router>
+    </UserContext.Provider>
     </div>
   );
 }
@@ -220,6 +218,9 @@ function CardList(props){
 }
 
 function LoginForm(){
+  const { userState, dispatch } = useContext(UserContext);
+  console.log('userState in LoginForm', userState);
+
   const navigate = useNavigate();
   let [isLoading, setIsLoading] = useState(false);
 
@@ -227,8 +228,8 @@ function LoginForm(){
   let [formPassword, setFormPassword] = useState("");
 
   useEffect(()=>{
-    const {currentUser} = getSessionStorage();
-    if(currentUser) navigate('/')
+    console.log('userState.isLogin', userState.isLogin)
+    if(userState.isLogin) navigate("/")
   }, [navigate])
 
   let loginUser = async () => {
@@ -258,6 +259,7 @@ function LoginForm(){
       console.log('login res', res)
 
       setSessionStorage({currentUser: res.user})
+      dispatch({type: 'login', payload: {currentUserEmail: res.user.email, favorite_cards: res.user.favorite_cards, fuck: 'fuck' }})
       navigate('/');
     } catch (e) {
       console.log(e)
@@ -367,18 +369,24 @@ function RegisterForm(props){
   )
 }
 
-function NavBar(props){
+function Logout() {
+  const { userState, dispatch } = useContext(UserContext);
   let navigate = useNavigate();
-  let [isLogin,setIsLogin] = useState(false);
-  let [currentUser, setCurrentUser] = useState({});
 
-  useEffect(()=>{
-    const session = getSessionStorage();
-    if(session?.currentUser?.email){
-      setCurrentUser(session.currentUser);
-      setIsLogin(true);
-    }
-  }, [navigate])
+  useEffect(() => {
+    removeSessionStorage();
+    dispatch({ type: 'logout' });
+    navigate("/");
+  },[]);
+  return (
+    <></>
+  )
+};
+
+function NavBar(props){
+  const { userState, dispatch } = useContext(UserContext);
+  console.log('userState in NavBar', userState);
+  let navigate = useNavigate();
 
   return (
     <Box>
@@ -386,7 +394,7 @@ function NavBar(props){
       <Button onClick={(e)=>{
         navigate('/')
       }}>FST PokemonTcg</Button>
-      {!isLogin && (
+      {!userState.isLogin && (
         <React.Fragment>
         <Button onClick={(e)=>{
           navigate('/register')
@@ -396,15 +404,13 @@ function NavBar(props){
         }}>Login</Button>
         </React.Fragment>
       )}
-      {isLogin && (
+      {userState.isLogin && (
         <React.Fragment>
         <Button onClick={(e) => {navigate('/favorite_list')}}>Favorite list<FavoriteIcon></FavoriteIcon></Button>
         <Button onClick={(e)=>{
-          removeSessionStorage();
-          setIsLogin(false)
-          navigate('/')
+          navigate('/logout');
         }}>Logout</Button>
-        <Box>{currentUser.email}</Box>
+        <Box>{userState.currentUserEmail}</Box>
         </React.Fragment>
       )}
     </Box>
@@ -412,6 +418,9 @@ function NavBar(props){
 }
 
 function QueryBlock(props){
+  const { userState, dispatch } = useContext(UserContext);
+  console.log('userState in QueryBlock', userState);
+
   const [isQuerying, setIsQuerying] = useState(false);//is querying API state now
   let [isUpdating, setIsUpdating] = useState(false);
 
@@ -635,6 +644,9 @@ function QueryBlock(props){
 
 function PokemonCard(props){
   const { card, userIsLogin,  addTo, removeFrom } = props;
+
+  const { userState, dispatch } = useContext(UserContext);
+  console.log('userState in PokemonCard', userState);
 
   let [isUpdating, setIsUpdating] = useState(false);
   let useStyleClasses = makeStyles((theme) => ({

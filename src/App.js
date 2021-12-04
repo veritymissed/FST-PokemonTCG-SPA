@@ -11,7 +11,9 @@ import Slider from '@mui/material/Slider';
 
 import { BrowserRouter as Router, Routes, Route, Link, useNavigate } from 'react-router-dom';
 import { makeStyles } from '@mui/styles';
+import IconButton from '@material-ui/core/IconButton';
 import FavoriteIcon from '@mui/icons-material/Favorite';
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import DeleteIcon from '@mui/icons-material/Delete';
 import Cookies from 'js-cookie';
 import * as _ from 'lodash';
@@ -22,17 +24,18 @@ import * as raritiesEsModule from './static/rarities.json';
 import * as supertypesEsModule from './static/supertypes.json';
 import * as typesEsModule from './static/types.json';
 import * as ponkemon_cards from './static/data/cards.json'
+
 let cards = ponkemon_cards.default.data;
 
 const rarities = raritiesEsModule.default.data;
 const supertypes = supertypesEsModule.default.data;
 const types = typesEsModule.default.data;
 
-var howOfftenAppUseEffect = 0;
+// console.log('rarities', rarities)
+// console.log('supertypes', supertypes)
+// console.log('types', types)
 
-console.log('rarities', rarities)
-console.log('supertypes', supertypes)
-console.log('types', types)
+const QUERYING_API_PAGE_SIZE = 8;
 
 function setSessionStorage(session){
   removeSessionStorage();
@@ -55,10 +58,28 @@ function getCurrentUser(){
   return currentUser;
 }
 
+const getUpdateUserPromise = function(updatingUser, form){
+  return new Promise(function(resolve) {
+    let options = {
+      'method': 'PATCH',
+      'url': `http://localhost:3000/users/${updatingUser.id}`,
+      'headers': {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(form)
+    };
+    request(options, function (error, response) {
+      if (error) throw error;
+      let responseObject = JSON.parse(response.body);
+      console.log(responseObject);
+      resolve(responseObject)
+    });
+
+  });
+}
+
 function App(props) {
   useEffect(() => {
-    howOfftenAppUseEffect++;
-    console.log("how often APP useEffect - ", howOfftenAppUseEffect);
   },[]);
 
   return (
@@ -67,7 +88,7 @@ function App(props) {
       <NavBar></NavBar>
       <Routes>
         <Route path="/" element={<QueryBlock />}></Route>
-        <Route path="/favorite_list" element={<FavoriteCardList favoriteCardList={cards}/>}></Route>
+        <Route path="/favorite_list" element={<FavoriteCardList/>}></Route>
         <Route path="/login" element={<LoginForm />}></Route>
         <Route path="/register" element={<RegisterForm />}></Route>
       </Routes>
@@ -78,23 +99,84 @@ function App(props) {
 
 function FavoriteCardList(props){
   let navigate = useNavigate();
-  const { favoriteCardList } = props;
-  const [userIsLogin, setUserIsLogin] = useState(!_.isEmpty(getCurrentUser()));
+
+  // let [userIsLogin, setUserIsLogin] = useState(false);
+  let [favoriteCardList, setFavoriteCardList] = useState([]);
+
+  let [isUpdating, setIsUpdating] = useState(false);
+
+  let currentUser = getCurrentUser();
+
+  let userIsLogin = false;
+  if(_.isEmpty(currentUser)) currentUser = false;
+  else {
+    userIsLogin = true;
+    console.log(currentUser)
+  }
+
+  useEffect(()=>{
+    setFavoriteCardList(currentUser.favorite_cards);
+  },[])
+
+  let addTo = async (cardObject) => {
+    if(isUpdating) return
+
+    const currentUser = getCurrentUser();
+    if(_.isEmpty(currentUser)) return;
+
+    let foundIndex = currentUser.favorite_cards.findIndex((cardInCurrentUser) => cardInCurrentUser.id === cardObject.id);
+    if(foundIndex >= 0) return;
+
+    currentUser.favorite_cards.push(cardObject);
+    setSessionStorage({currentUser})
+
+    try {
+      await getUpdateUserPromise(currentUser, {favorite_cards: currentUser.favorite_cards || []})
+    } catch (e) {
+      console.log(e)
+    } finally {
+      setIsUpdating(false);
+    }
+  };
+
+  let removeFrom = async (cardId) => {
+    console.log(`card id = ${cardId}`);
+    if(isUpdating) return
+    const currentUser = getCurrentUser();
+    if(_.isEmpty(currentUser)) return;
+
+    let foundIndex = currentUser.favorite_cards.findIndex((cardInCurrentUser) => cardInCurrentUser.id === cardId);
+    if(foundIndex < 0) return;
+    currentUser.favorite_cards.splice(foundIndex, 1);
+    setSessionStorage({currentUser})
+
+    try {
+      setIsUpdating(true);
+      await getUpdateUserPromise(currentUser, {favorite_cards: currentUser.favorite_cards || []})
+    } catch (e) {
+      console.log(e)
+    } finally {
+      setIsUpdating(false);
+    }
+  };
+
   useEffect(() => {
     if(!userIsLogin) navigate('/');
   },[navigate]);
 
-  return (<CardList userIsLogin={userIsLogin} cards={favoriteCardList}></CardList>)
+  return (<CardList userIsLogin={userIsLogin} cards={favoriteCardList}
+    addTo={addTo} removeFrom={removeFrom}></CardList>)
 }
 
 function CardList(props){
-  const { cards, userIsLogin } = props;
+  const { cards, userIsLogin, addTo, removeFrom } = props;
 
   return (
     <Box display="flex" justifyContent="left" flexWrap="wrap" maxWidth="900px" mx="auto">
     {
       cards.map((card) => (
-        <PokemonCard card={card} userIsLogin={userIsLogin}></PokemonCard>
+        <PokemonCard card={card} userIsLogin={userIsLogin}
+        addTo={addTo} removeFrom={removeFrom}></PokemonCard>
       ))
     }
     </Box>
@@ -258,7 +340,6 @@ function NavBar(props){
     const session = getSessionStorage();
     if(session?.currentUser?.email){
       setCurrentUser(session.currentUser);
-      // console.log('currentUser', currentUser)
       setIsLogin(true);
     }
   }, [navigate])
@@ -296,6 +377,7 @@ function NavBar(props){
 
 function QueryBlock(props){
   const [isQuerying, setIsQuerying] = useState(false);//is querying API state now
+  let [isUpdating, setIsUpdating] = useState(false);
 
   const [formName, setFormDataName] = useState('');
   const [formType, setFormType] = useState('');
@@ -391,9 +473,8 @@ function QueryBlock(props){
       try {
         request({
           method: 'GET',
-          uri: `https://api.pokemontcg.io/v2/cards/?q=${queryString}&pageSize=4&page=${page}`,
+          uri: `https://api.pokemontcg.io/v2/cards/?q=${queryString}&pageSize=${QUERYING_API_PAGE_SIZE}&page=${page}`,
           q: queryString,
-          pageSize: 20,
         }, function(err, res, body){
           if(err) throw err
           else resolve(JSON.parse(body))
@@ -402,6 +483,48 @@ function QueryBlock(props){
         throw e
       }
     })
+  };
+
+  let addTo = async (cardObject) => {
+    if(isUpdating) return
+
+    const currentUser = getCurrentUser();
+    if(_.isEmpty(currentUser)) return;
+
+    let foundIndex = currentUser.favorite_cards.findIndex((cardInCurrentUser) => cardInCurrentUser.id === cardObject.id);
+    if(foundIndex >= 0) return;
+
+    currentUser.favorite_cards.push(cardObject);
+    setSessionStorage({currentUser})
+
+    try {
+      await getUpdateUserPromise(currentUser, {favorite_cards: currentUser.favorite_cards || []})
+    } catch (e) {
+      console.log(e)
+    } finally {
+      setIsUpdating(false);
+    }
+  };
+
+  let removeFrom = async (cardId) => {
+    console.log(`card id = ${cardId}`);
+    if(isUpdating) return
+    const currentUser = getCurrentUser();
+    if(_.isEmpty(currentUser)) return;
+
+    let foundIndex = currentUser.favorite_cards.findIndex((cardInCurrentUser) => cardInCurrentUser.id === cardId);
+    if(foundIndex < 0) return;
+    currentUser.favorite_cards.splice(foundIndex, 1);
+    setSessionStorage({currentUser})
+
+    try {
+      setIsUpdating(true);
+      await getUpdateUserPromise(currentUser, {favorite_cards: currentUser.favorite_cards || []})
+    } catch (e) {
+      console.log(e)
+    } finally {
+      setIsUpdating(false);
+    }
   };
 
   return (
@@ -459,7 +582,7 @@ function QueryBlock(props){
         }}>Query</Button>
       </FormControl>
 
-      { queryResultCardsArray.length > 0 && (<CardList cards={queryResultCardsArray}></CardList>)}
+      { queryResultCardsArray.length > 0 && (<CardList cards={queryResultCardsArray} addTo={addTo} removeFrom={removeFrom}></CardList>)}
       <Box display="flex" justifyContent="center">
         { isQuerying && (
           <Loader width={60} height={60} borderWidth={15}></Loader>
@@ -475,7 +598,7 @@ function QueryBlock(props){
 }
 
 function PokemonCard(props){
-  const { card, userIsLogin } = props;
+  const { card, userIsLogin,  addTo, removeFrom } = props;
 
   let [isUpdating, setIsUpdating] = useState(false);
   let useStyleClasses = makeStyles((theme) => ({
@@ -489,70 +612,6 @@ function PokemonCard(props){
     },
   }))
   let styleClass = useStyleClasses();
-
-  const getUpdateUserPromise = function(updatingUser, form){
-    return new Promise(function(resolve) {
-      let options = {
-        'method': 'PATCH',
-        'url': `http://localhost:3000/users/${updatingUser.id}`,
-        'headers': {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(form)
-      };
-      request(options, function (error, response) {
-        if (error) throw error;
-        let responseObject = JSON.parse(response.body);
-        console.log(responseObject);
-        resolve(responseObject)
-      });
-
-    });
-  }
-
-  const deleteFromFavoriteList = async () => {
-    if(isUpdating) return
-    // console.log(`Delete ponkemon card id = ${card.id} from list`)
-    const currentUser = getCurrentUser();
-    if(_.isEmpty(currentUser)) return;
-
-    let foundIndex = currentUser.favorite_cards.findIndex((cardInCurrentUser) => cardInCurrentUser.id === card.id);
-    if(foundIndex < 0) return;
-    // console.log('currentUser.favorite_cards', currentUser.favorite_cards)
-    currentUser.favorite_cards.splice(foundIndex, 1);
-    setSessionStorage({currentUser})
-    // console.log('currentUser.favorite_cards', currentUser.favorite_cards)
-    // console.log('found', found)
-    try {
-      setIsUpdating(true);
-      await getUpdateUserPromise(currentUser, {favorite_cards: currentUser.favorite_cards || []})
-    } catch (e) {
-      console.log(e)
-    } finally {
-      setIsUpdating(false);
-    }
-  };
-
-  const addToFavoriteList = async () => {
-    if(isUpdating) return
-
-    const currentUser = getCurrentUser();
-    if(_.isEmpty(currentUser)) return;
-
-    let foundIndex = currentUser.favorite_cards.findIndex((cardInCurrentUser) => cardInCurrentUser.id === card.id);
-    if(foundIndex >= 0) return;
-
-    currentUser.favorite_cards.push(card);
-    setSessionStorage({currentUser})
-
-    try {
-      await getUpdateUserPromise(currentUser, {favorite_cards: currentUser.favorite_cards || []})
-    } catch (e) {
-      console.log(e)
-    } finally {
-      setIsUpdating(false);
-    }
-  }
 
   return(
   <Card sx={{ width: 200 }} className={styleClass.card_style}>
@@ -576,12 +635,23 @@ function PokemonCard(props){
       <Typography variant="subtitle2" gutterBottom component="div">
         Rarity: {card.rarity|| 'No data'}
       </Typography>
+      <Box display="flex" justifyContent="flex-end">
+        <IconButton color="primary" onClick={(e)=>{
+          removeFrom(card.id);
+        }}>
+          <FavoriteIcon></FavoriteIcon>
+        </IconButton>
+        <IconButton color="primary" onClick={(e)=>{
+          addTo(card);
+        }}>
+          <FavoriteBorderIcon></FavoriteBorderIcon>
+        </IconButton>
+      </Box>
       {userIsLogin && (
         <Box display="flex" flexWrap="wrap" justifyContent="flex-end">
-          <Button onClick={addToFavoriteList}>
-            <FavoriteIcon></FavoriteIcon>
-          </Button>
-          <Button onClick={deleteFromFavoriteList} color="info">
+          <Button onClick={(e) => {
+            removeFrom(card.id);
+          }} color="info">
             <DeleteIcon></DeleteIcon>
           </Button>
         </Box>

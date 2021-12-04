@@ -209,8 +209,7 @@ function CardList(props){
     <Box display="flex" justifyContent="left" flexWrap="wrap" maxWidth="900px" mx="auto">
     {
       cards.map((card) => (
-        <PokemonCard card={card} userIsLogin={userIsLogin}
-        addTo={addTo} removeFrom={removeFrom}></PokemonCard>
+        <PokemonCard card={card} addTo={addTo} removeFrom={removeFrom}></PokemonCard>
       ))
     }
     </Box>
@@ -643,7 +642,7 @@ function QueryBlock(props){
 }
 
 function PokemonCard(props){
-  const { card, userIsLogin,  addTo, removeFrom } = props;
+  const { card,  addTo, removeFrom } = props;
 
   const { userState, dispatch } = useContext(UserContext);
   console.log('userState in PokemonCard', userState);
@@ -683,19 +682,20 @@ function PokemonCard(props){
       <Typography variant="subtitle2" gutterBottom component="div">
         Rarity: {card.rarity|| 'No data'}
       </Typography>
-      <Box display="flex" justifyContent="flex-end">
-        <IconButton color="primary" onClick={(e)=>{
-          removeFrom(card.id);
-        }}>
+      {userState.isLogin && (
+        <>
+        <Box display="flex" justifyContent="flex-end">
+          <IconButton color="primary" onClick={(e)=>{
+            removeFrom(card.id);
+          }}>
           <FavoriteIcon></FavoriteIcon>
-        </IconButton>
-        <IconButton color="primary" onClick={(e)=>{
-          addTo(card);
-        }}>
+          </IconButton>
+          <IconButton color="primary" onClick={(e)=>{
+            addTo(card);
+          }}>
           <FavoriteBorderIcon></FavoriteBorderIcon>
-        </IconButton>
-      </Box>
-      {userIsLogin && (
+          </IconButton>
+        </Box>
         <Box display="flex" flexWrap="wrap" justifyContent="flex-end">
           <Button onClick={(e) => {
             removeFrom(card.id);
@@ -703,6 +703,7 @@ function PokemonCard(props){
             <DeleteIcon></DeleteIcon>
           </Button>
         </Box>
+        </>
       )}
     </CardContent>
   </Card>)

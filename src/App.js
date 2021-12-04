@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useReducer } from 'react';
 import logo from './logo.svg';
 import './App.css';
 import { Box, TextField, Button, Typography, Icon } from '@mui/material';
@@ -36,6 +36,30 @@ const types = typesEsModule.default.data;
 // console.log('types', types)
 
 const QUERYING_API_PAGE_SIZE = 8;
+
+const initialState = {
+  isLogin: false,
+  currentUserEmail: null,
+  favorite_cards: [],
+};
+
+function reducer(state, action) {
+  console.log('state', state)
+  console.log('action', action);
+  switch (action.type) {
+    case 'login':
+      const { isLogin, ...updatePayload } = action.payload;
+      console.log('updatePayload', updatePayload)
+      console.log({
+        isLogin: true , ...updatePayload
+      })
+      return { isLogin: true , ...updatePayload };
+    case 'logout':
+      return initialState
+    default:
+      throw new Error();
+  }
+};
 
 function setSessionStorage(session){
   removeSessionStorage();
@@ -82,8 +106,20 @@ function App(props) {
   useEffect(() => {
   },[]);
 
+  //
+  const [state, dispatch] = useReducer(reducer, initialState)
+  console.log('state', state)
+  let fuckCurrentUser = getCurrentUser();
+  console.log('fuckCurrentUser', fuckCurrentUser)
+  //
+
   return (
     <div className="App">
+      <Box>
+      isLogin: {state.isLogin}
+      CurrentUser: {state.currentUserEmail}
+      <button onClick={() => dispatch({type: 'login', payload: {currentUserEmail: fuckCurrentUser.email, favorite_cards: fuckCurrentUser.favorite_cards }})}>Login</button>
+      </Box>
     <Router>
       <NavBar></NavBar>
       <Routes>

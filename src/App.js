@@ -49,6 +49,7 @@ function reducer(state, action) {
       return { isLogin: true , ...updatePayload };
     case 'update_favorite_cards':
       const { favorite_cards, ...oldState} = state;
+      console.log('update_favorite_cards', { ...oldState, favorite_cards: action.payload.favorite_cards });
       return { ...oldState, favorite_cards: action.payload.favorite_cards };
     case 'logout':
       return initialUserState;
@@ -145,42 +146,18 @@ function App(props) {
 function FavoriteCardList(props){
   const { userState, dispatch } = useContext(UserContext);
   console.log('userState in FavoriteCardList', userState);
+  let [favoriteCardList, setFavoriteCardList] = useState(userState.favorite_cards);
 
   let navigate = useNavigate();
   useEffect(() => {
     if(!userState.isLogin) {
       navigate('/login');
     }
-  },[]);
+    setFavoriteCardList(userState.favorite_cards);
+  },[userState]);
 
-  let [favoriteCardList, setFavoriteCardList] = useState(userState.favorite_cards);
 
   let [isUpdating, setIsUpdating] = useState(false);
-
-  useEffect(()=>{
-    // setFavoriteCardList(currentUser.favorite_cards);
-  },[])
-
-  let addTo = async (cardObject) => {
-    if(isUpdating) return
-
-    let currentUser = getCurrentUser();
-    if(_.isEmpty(currentUser)) return;
-
-    let foundIndex = currentUser.favorite_cards.findIndex((cardInCurrentUser) => cardInCurrentUser.id === cardObject.id);
-    if(foundIndex >= 0) return;
-
-    currentUser.favorite_cards.push(cardObject);
-    setSessionStorage({currentUser})
-
-    try {
-      await getUpdateUserPromise(currentUser, {favorite_cards: currentUser.favorite_cards || []})
-    } catch (e) {
-      console.log(e)
-    } finally {
-      setIsUpdating(false);
-    }
-  };
 
   let removeFrom = async (cardId) => {
     console.log(`card id = ${cardId}`);
@@ -195,7 +172,8 @@ function FavoriteCardList(props){
 
     try {
       setIsUpdating(true);
-      await getUpdateUserPromise(currentUser, {favorite_cards: currentUser.favorite_cards || []})
+      await getUpdateUserPromise(currentUser, {favorite_cards: currentUser.favorite_cards || []});
+      dispatch({type: "update_favorite_cards", payload: {favorite_cards: currentUser.favorite_cards}});
     } catch (e) {
       console.log(e)
     } finally {
@@ -203,8 +181,7 @@ function FavoriteCardList(props){
     }
   };
 
-  return (<CardList cards={favoriteCardList}
-    addTo={addTo} removeFrom={removeFrom}></CardList>)
+  return (<CardList cards={favoriteCardList} removeFrom={removeFrom}></CardList>)
 }
 
 function CardList(props){
@@ -547,7 +524,8 @@ function QueryBlock(props){
     setSessionStorage({currentUser})
 
     try {
-      await getUpdateUserPromise(currentUser, {favorite_cards: currentUser.favorite_cards || []})
+      await getUpdateUserPromise(currentUser, {favorite_cards: currentUser.favorite_cards || []});
+      dispatch({type: "update_favorite_cards", payload: {favorite_cards: currentUser.favorite_cards}});
     } catch (e) {
       console.log(e)
     } finally {
@@ -569,6 +547,7 @@ function QueryBlock(props){
     try {
       setIsUpdating(true);
       await getUpdateUserPromise(currentUser, {favorite_cards: currentUser.favorite_cards || []})
+      dispatch({type: "update_favorite_cards", payload: {favorite_cards: currentUser.favorite_cards}});
     } catch (e) {
       console.log(e)
     } finally {
@@ -658,7 +637,7 @@ function PokemonCard(props){
     let foundIndex = userState.favorite_cards.findIndex((cardInCurrentUser) => cardInCurrentUser.id === card.id);
     if(foundIndex >= 0) setInFavoriteCards(true);
     else setInFavoriteCards(false);
-  }, []);
+  }, [userState]);
 
 
   let [isUpdating, setIsUpdating] = useState(false);

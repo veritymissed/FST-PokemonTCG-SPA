@@ -31,10 +31,6 @@ const rarities = raritiesEsModule.default.data;
 const supertypes = supertypesEsModule.default.data;
 const types = typesEsModule.default.data;
 
-// console.log('rarities', rarities)
-// console.log('supertypes', supertypes)
-// console.log('types', types)
-
 const QUERYING_API_PAGE_SIZE = 8;
 
 const initialUserState = {
@@ -105,14 +101,26 @@ const getUpdateUserPromise = function(updatingUser, form){
 }
 
 function App(props) {
-  const [userState, dispatch] = useReducer(reducer, initialUserState);
+  let currentUserInLocalStorage = getCurrentUser();
+  let init;
+  if(currentUserInLocalStorage){
+    init = {
+      isLogin: true,
+      currentUserEmail: currentUserInLocalStorage.email,
+      favorite_cards: currentUserInLocalStorage.favorite_cards
+    };
+  }
+  else init = initialUserState;
+
+  const [userState, dispatch] = useReducer(reducer, initialUserState, () => {
+    return init
+  });
+
   useEffect(() => {
-    //
     let currentUserInLocalStorage = getCurrentUser();
     if(currentUserInLocalStorage){
       dispatch({type: 'login', payload: {currentUserEmail: currentUserInLocalStorage.email, favorite_cards: currentUserInLocalStorage.favorite_cards }});
     }
-    //
   },[]);
 
 
@@ -140,7 +148,9 @@ function FavoriteCardList(props){
 
   let navigate = useNavigate();
   useEffect(() => {
-    if(!userState.isLogin) navigate('/');
+    if(!userState.isLogin) {
+      navigate('/login');
+    }
   },[]);
 
   let [favoriteCardList, setFavoriteCardList] = useState(userState.favorite_cards);

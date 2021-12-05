@@ -643,6 +643,14 @@ function PokemonCard(props){
 
   let [isInFavoriteListPage, setIsInFavoriteListPage] = useState(useLocation().pathname === '/favorite_list');
 
+  let [inFavoriteCards, setInFavoriteCards] = useState(false);
+  useEffect(() => {
+    let foundIndex = userState.favorite_cards.findIndex((cardInCurrentUser) => cardInCurrentUser.id === card.id);
+    if(foundIndex >= 0) setInFavoriteCards(true);
+    else setInFavoriteCards(false);
+  }, []);
+
+
   let [isUpdating, setIsUpdating] = useState(false);
   let useStyleClasses = makeStyles((theme) => ({
     card_style: {
@@ -680,16 +688,20 @@ function PokemonCard(props){
       </Typography>
       {userState.isLogin && !isInFavoriteListPage && (
         <Box display="flex" justifyContent="flex-end">
-          <IconButton color="primary" onClick={(e)=>{
-            removeFrom(card.id);
-          }}>
-          <FavoriteIcon></FavoriteIcon>
-          </IconButton>
-          <IconButton color="primary" onClick={(e)=>{
-            addTo(card);
-          }}>
-          <FavoriteBorderIcon></FavoriteBorderIcon>
-          </IconButton>
+          {inFavoriteCards && (
+            <IconButton color="primary" onClick={(e)=>{
+              removeFrom(card.id);
+            }}>
+            <FavoriteIcon></FavoriteIcon>
+            </IconButton>
+          )}
+          {!inFavoriteCards && (
+            <IconButton color="primary" onClick={(e)=>{
+              addTo(card);
+            }}>
+            <FavoriteBorderIcon></FavoriteBorderIcon>
+            </IconButton>
+          )}
         </Box>
       )}
       {userState.isLogin && isInFavoriteListPage && (

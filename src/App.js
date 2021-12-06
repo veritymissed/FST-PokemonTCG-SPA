@@ -194,7 +194,7 @@ function CardList(props){
   const { cards, addTo, removeFrom } = props;
 
   return (
-    <Box display="flex" justifyContent="left" flexWrap="wrap" maxWidth="900px" mx="auto">
+    <Box sx={{display: "fex", justifyContent: "flex-start"}} flexWrap="wrap" maxWidth="900px" mx="auto">
     {
       cards.map((card) => (
         <PokemonCard card={card} addTo={addTo} removeFrom={removeFrom}></PokemonCard>
@@ -732,8 +732,10 @@ function PokemonCard(props){
     card_style: {
       marginTop: '10px',
       marginBottom: '10px',
-      marginLeft: 'auto',
-      marginRight: 'auto',
+      // marginLeft: 'auto',
+      // marginRight: 'auto',
+      marginLeft: '7.5px',
+      marginRight: '7.5px',
       paddingLeft: '5px',
       paddingRight: '5px'
     },

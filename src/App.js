@@ -309,6 +309,7 @@ function RegisterForm(props){
 
   let [formEmail, setFormEmail] = useState("");
   let [formPassword, setFormPassword] = useState("");
+  let [formRepeatPassword, setFormRepeatPassword] = useState("");
 
   useEffect(()=>{
     const {currentUser} = getSessionStorage();
@@ -347,17 +348,35 @@ function RegisterForm(props){
     }
   };
 
+  let useStyles = makeStyles((theme)=> ({
+    register_block_container:{
+      borderRadius: "5px",
+      width: "400px",
+      margin: "40px auto 10px auto",
+      padding: "15px 30px 15px 30px",
+      backgroundColor: color_white,
+    },
+    register_block_control: {
+      marginTop: "5px",
+      marginBottom: "5px",
+    }
+  }));
+  const classes = useStyles();
+
   return(
-    <Box>
-      <TextField
+    <Box className={classes.register_block_container}>
+      <Box className={classes.register_block_control}>
+        <TextField fullWidth
         required
         id="outlined-required"
         label="Email"
         onChange={(e) => {
           setFormEmail(e.target.value);
         }}
-      />
-      <TextField
+        />
+      </Box>
+      <Box className={classes.register_block_control}>
+        <TextField fullWidth
         id="outlined-password-input"
         label="Password"
         type="password"
@@ -365,7 +384,19 @@ function RegisterForm(props){
         onChange={(e) => {
           setFormPassword(e.target.value);
         }}
-      />
+        />
+      </Box>
+      <Box className={classes.register_block_control}>
+        <TextField fullWidth
+        id="outlined-password-input"
+        label="Repeat password"
+        type="password"
+        autoComplete="current-password"
+        onChange={(e) => {
+          setFormRepeatPassword(e.target.value);
+        }}
+        />
+      </Box>
       <Button onClick={(e) => {
         registerUser()
       }}>Register

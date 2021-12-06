@@ -255,17 +255,34 @@ function LoginForm(){
     }
   };
 
+  let useStyles = makeStyles((theme)=> ({
+    login_block_container:{
+      borderRadius: "5px",
+      width: "400px",
+      margin: "40px auto 10px auto",
+      padding: "15px 30px 15px 30px",
+      backgroundColor: color_white,
+    },
+    login_block_control: {
+      marginTop: "5px",
+      marginBottom: "5px",
+    }
+  }));
+  const classes = useStyles();
   return (
-    <Box>
-      <TextField
+    <Box className={classes.login_block_container}>
+      <Box className={classes.login_block_control}>
+        <TextField fullWidth
         required
         id="outlined-required"
         label="Email"
         onChange={(e) => {
           setFormEmail(e.target.value);
         }}
-      />
-      <TextField
+        />
+      </Box>
+      <Box className={classes.login_block_control}>
+        <TextField fullWidth
         id="outlined-password-input"
         label="Password"
         type="password"
@@ -273,7 +290,9 @@ function LoginForm(){
         onChange={(e) => {
           setFormPassword(e.target.value);
         }}
-      />
+        />
+      </Box>
+
       <Button onClick={(e) => {
         loginUser()
       }}>

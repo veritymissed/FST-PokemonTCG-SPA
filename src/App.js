@@ -423,7 +423,7 @@ function NavBar(props){
         </Box>
       )}
       {userState.isLogin && (
-        <Box>
+        <Box sx={{width: 350}}>
         <Button onClick={(e) => {navigate('/favorite_list')}}>
           <Box display="flex" className={(currentPath === "/favorite_list") ? classes.active_button : classes.non_active_button}><Box style={{lineHeight: "10px", margin: "0px 3px"}}><FavoriteIcon></FavoriteIcon></Box></Box>
         </Button>

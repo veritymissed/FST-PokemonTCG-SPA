@@ -1,8 +1,10 @@
 body{
   box-sizing: border-box;
+  height: 100vh;
+  background-color: #18191a;
 }
 .App {
-  text-align: center;
+
 }
 
 .App-logo {

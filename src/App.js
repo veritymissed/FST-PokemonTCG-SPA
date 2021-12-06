@@ -28,6 +28,11 @@ import * as ponkemon_cards from './static/data/cards.json'
 
 let cards = ponkemon_cards.default.data;
 
+const color_purple = "#5052c9";
+const color_white = "#f5f6f7";
+const font_size = "16px";
+const font_weight = "700";
+
 const rarities = raritiesEsModule.default.data;
 const supertypes = supertypesEsModule.default.data;
 const types = typesEsModule.default.data;
@@ -371,11 +376,6 @@ function NavBar(props){
   let navigate = useNavigate();
   const currentPath = useLocation().pathname;
 
-  let color_purple = "#5052c9";
-  let color_white = "#f5f6f7";
-  let font_size = "16px";
-  let font_weight = "700";
-
   let useStyles = makeStyles({
     navbar_box: {
       display: "flex",
@@ -440,7 +440,7 @@ function NavBar(props){
 
 function QueryBlock(props){
   const { userState, dispatch } = useContext(UserContext);
-  console.log('userState in QueryBlock', userState);
+  // console.log('userState in QueryBlock', userState);
 
   const [isQuerying, setIsQuerying] = useState(false);//is querying API state now
   let [isUpdating, setIsUpdating] = useState(false);
@@ -595,12 +595,50 @@ function QueryBlock(props){
     }
   };
 
+  let useStyles = makeStyles((theme)=> ({
+    query_block_container:{
+      borderRadius: "5px",
+      width: "80%",
+      margin: "40px auto 10px auto",
+      padding: "15px 30px 15px 30px",
+      backgroundColor: color_white,
+      display: "flex",
+    },
+    slider_container: {
+      color: "#626263",
+      width: "400px",
+      padding: "5px 5px 5px 5px",
+      marginLeft: "20px",
+      marginRight: "20px",
+    },
+    queryButtonText: {
+      color: color_purple,
+      fontWeight: "500",
+      fontSize: '16px',
+      paddingTop: "10px",
+      paddingBottom: "10px",
+    }
+  }))
+
+  const classes = useStyles();
+
+  let select_box_style_sx = {
+    minWidth: 120,
+    marginLeft: "5px",
+    marginRight: "5px",
+  }
+
   return (
-    <Box>
-      <TextField id="outlined-basic" label="name" variant="outlined" onChange={(e) => {setFormDataName(e.target.value)}} />
-      <FormControl>
-        <InputLabel id="demo-simple-select-label">Type</InputLabel>
-        <Select
+    <Box >
+      <Box className={classes.query_block_container}>
+        <Box sx={select_box_style_sx}>
+          <TextField id="outlined-basic" label="Name" variant="outlined" onChange={(e) => {setFormDataName(e.target.value)}} />
+        </Box>
+
+        <Box sx={select_box_style_sx}>
+        <FormControl fullWidth>
+          <InputLabel id="demo-simple-select-label">Type</InputLabel>
+          <Select
           labelId="demo-simple-select-label"
           id="demo-simple-select"
           value={formType}
@@ -608,30 +646,19 @@ function QueryBlock(props){
           onChange={(e)=>{
             setFormType(e.target.value);
           }}
-        >
+          >
           <MenuItem value={''}>None</MenuItem>
           {types.map((type) => (
             <MenuItem value={type}>{type}</MenuItem>
           ))}
-        </Select>
-      </FormControl>
+          </Select>
+        </FormControl>
+        </Box>
 
-      <Box width="500px">
-      <Slider
-        min={0} max={500}
-        getAriaLabel={() => 'HP range'}
-        value={formHp}
-        onChange={(e, newValue)=>{
-          setFormHp(newValue)
-        }}
-        valueLabelDisplay="auto"
-        getAriaValueText={(e) => `${formHp}`}
-      />
-      </Box>
-
-      <FormControl>
-        <InputLabel id="demo-simple-select-label">Rarity</InputLabel>
-        <Select
+        <Box sx={select_box_style_sx}>
+        <FormControl fullWidth>
+          <InputLabel id="demo-simple-select-label">Rarity</InputLabel>
+          <Select
           labelId="demo-simple-select-label"
           id="demo-simple-select"
           value={formRarity}
@@ -639,16 +666,36 @@ function QueryBlock(props){
           onChange={(e)=>{
             setFormRarity(e.target.value);
           }}
-        >
+          >
           <MenuItem value={''}>None</MenuItem>
           {rarities.map((rarity) => (
             <MenuItem value={rarity}>{rarity}</MenuItem>
           ))}
-        </Select>
-        <Button onClick={(e)=>{
-          queryCards();
-        }}>Query</Button>
-      </FormControl>
+          </Select>
+        </FormControl>
+        </Box>
+
+        <Box className={classes.slider_container}>
+        <Box>HP range</Box>
+        <Slider
+        min={0} max={500}
+        valueLabelDisplay="auto"
+        getAriaLabel={() => 'HP range'}
+        value={formHp}
+        onChange={(e, newValue)=>{
+          setFormHp(newValue)
+        }}
+        valueLabelDisplay="auto"
+        getAriaValueText={(e) => `${formHp}`}
+        />
+        </Box>
+
+        <Box>
+          <Button onClick={(e)=>{
+            queryCards();
+          }}><Box className={classes.queryButtonText}>Query</Box></Button>
+        </Box>
+      </Box>
 
       { queryResultCardsArray.length > 0 && (<CardList cards={queryResultCardsArray} addTo={addTo} removeFrom={removeFrom}></CardList>)}
       <Box display="flex" justifyContent="center">

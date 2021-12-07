@@ -245,7 +245,6 @@ function LoginForm(){
       return;
     }
 
-    return;
     let loginPromise = new Promise(function(resolve, reject) {
       let options = {
         'method': 'POST',
@@ -345,12 +344,50 @@ function RegisterForm(props){
   let [formPassword, setFormPassword] = useState("");
   let [formRepeatPassword, setFormRepeatPassword] = useState("");
 
+  //For form input validation
+  let [formEmailValidationError, setFormEmailValidationError] = useState(false);
+  let [formEmailValidationErrorMessage, setFormEmailValidationErrorMessage] = useState("");
+
+  let [formPasswordValidationError, setFormPasswordValidationError] = useState(false);
+  let [formPasswordValidationErrorMessage, setFormPasswordValidationErrorMessage] = useState("");
+
+  let [formRepeatPasswordValidationError, setFormRepeatPasswordValidationError] = useState(false);
+  let [formRepeatPasswordValidationErrorMessage, setFormRepeatPasswordValidationErrorMessage] = useState("");
+
   useEffect(()=>{
     const {currentUser} = getSessionStorage();
     if(currentUser) navigate('/')
   }, [navigate])
 
   let registerUser = async () => {
+    let validateEmailError = validate.single(formEmail, {presence: true, email: true});
+    if(validateEmailError) {
+      setFormEmailValidationError(true);
+      setFormEmailValidationErrorMessage(validateEmailError[0]);
+      return;
+    }
+
+    let validatePasswordError = validate.single(formPassword, {presence: {allowEmpty: false}, length: {minimum: 6, maximum
+: 20}});
+
+    if(validatePasswordError) {
+      setFormPasswordValidationError(true);
+      setFormPasswordValidationErrorMessage(validatePasswordError[0]);
+      return;
+    }
+
+    let validatePasswordRepeatError = validate({formPassword, formRepeatPassword}, {
+      formRepeatPassword: {
+        equality: "formPassword"
+      }
+    });
+    console.log('validatePasswordRepeatError', validatePasswordRepeatError)
+    if(validatePasswordRepeatError) {
+      setFormRepeatPasswordValidationError(true);
+      setFormRepeatPasswordValidationErrorMessage(validatePasswordRepeatError.formRepeatPassword[0]);
+      return;
+    }
+
     let registerPromise = new Promise(function(resolve, reject) {
       let options = {
         'method': 'POST',
@@ -391,8 +428,8 @@ function RegisterForm(props){
       backgroundColor: color_white,
     },
     register_block_control: {
-      marginTop: "5px",
-      marginBottom: "5px",
+      marginTop: "10px",
+      marginBottom: "10px",
     }
   }));
   const classes = useStyles();
@@ -402,9 +439,13 @@ function RegisterForm(props){
       <Box className={classes.register_block_control}>
         <TextField fullWidth
         required
+        error={formEmailValidationError}
+        helperText={formEmailValidationErrorMessage}
         id="outlined-required"
         label="Email"
         onChange={(e) => {
+          setFormEmailValidationError(false);
+          setFormEmailValidationErrorMessage("");
           setFormEmail(e.target.value);
         }}
         />
@@ -412,10 +453,14 @@ function RegisterForm(props){
       <Box className={classes.register_block_control}>
         <TextField fullWidth
         id="outlined-password-input"
+        error={formPasswordValidationError}
+        helperText={formPasswordValidationErrorMessage}
         label="Password"
         type="password"
         autoComplete="current-password"
         onChange={(e) => {
+          setFormPasswordValidationError(false);
+          setFormPasswordValidationErrorMessage("");
           setFormPassword(e.target.value);
         }}
         />
@@ -423,10 +468,14 @@ function RegisterForm(props){
       <Box className={classes.register_block_control}>
         <TextField fullWidth
         id="outlined-password-input"
+        error={formRepeatPasswordValidationError}
+        helperText={formRepeatPasswordValidationErrorMessage}
         label="Repeat password"
         type="password"
         autoComplete="current-password"
         onChange={(e) => {
+          setFormRepeatPasswordValidationError(false);
+          setFormRepeatPasswordValidationErrorMessage("");
           setFormRepeatPassword(e.target.value);
         }}
         />

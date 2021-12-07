@@ -38,6 +38,10 @@ const rarities = raritiesEsModule.default.data;
 const supertypes = supertypesEsModule.default.data;
 const types = typesEsModule.default.data;
 
+//LoginForm & RegisterForm
+const MIN_PASSWORD_LENGTH = 4;
+const MAX_PASSWORD_LENGTH = 20;
+
 const QUERYING_API_PAGE_SIZE = 8;
 
 const initialUserState = {
@@ -236,8 +240,8 @@ function LoginForm(){
       return;
     }
 
-    let validatePasswordError = validate.single(formPassword, {presence: {allowEmpty: false}, length: {minimum: 6, maximum
-: 20}});
+    let validatePasswordError = validate.single(formPassword, {presence: {allowEmpty: false}, length: {minimum: MIN_PASSWORD_LENGTH, maximum
+: MAX_PASSWORD_LENGTH}});
 
     if(validatePasswordError) {
       setFormPasswordValidationError(true);
@@ -269,6 +273,12 @@ function LoginForm(){
       setIsLoading(true)
       let res = await loginPromise;
       console.log('login res', res)
+      if(res.statusCode === 401) {
+        setFormPasswordValidationError(true);
+        setFormEmailValidationError(true);
+        setFormEmailValidationErrorMessage("Email or password not correct.");
+        throw new Error("Login user authentication error!");
+      }
 
       setSessionStorage({currentUser: res.user})
       dispatch({type: 'login', payload: { currentUserEmail: res.user.email, favorite_cards: res.user.favorite_cards }})
@@ -315,7 +325,7 @@ function LoginForm(){
         id="outlined-password-input"
         error={formPasswordValidationError}
         helperText={formPasswordValidationErrorMessage}
-        label="Password(6-20 char)"
+        label={`Password(${MIN_PASSWORD_LENGTH}-${MAX_PASSWORD_LENGTH} char)`}
         type="password"
         autoComplete="current-password"
         onChange={(e) => {
@@ -367,8 +377,8 @@ function RegisterForm(props){
       return;
     }
 
-    let validatePasswordError = validate.single(formPassword, {presence: {allowEmpty: false}, length: {minimum: 6, maximum
-: 20}});
+    let validatePasswordError = validate.single(formPassword, {presence: {allowEmpty: false}, length: {minimum: MIN_PASSWORD_LENGTH, maximum
+: MAX_PASSWORD_LENGTH}});
 
     if(validatePasswordError) {
       setFormPasswordValidationError(true);
@@ -455,7 +465,7 @@ function RegisterForm(props){
         id="outlined-password-input"
         error={formPasswordValidationError}
         helperText={formPasswordValidationErrorMessage}
-        label="Password"
+        label={`Password(${MIN_PASSWORD_LENGTH}-${MAX_PASSWORD_LENGTH} char)`}
         type="password"
         autoComplete="current-password"
         onChange={(e) => {

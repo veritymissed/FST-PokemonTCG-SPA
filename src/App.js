@@ -26,6 +26,7 @@ import * as supertypesEsModule from './static/supertypes.json';
 import * as typesEsModule from './static/types.json';
 import * as ponkemon_cards from './static/data/cards.json'
 
+import * as validate from 'validate.js';
 let cards = ponkemon_cards.default.data;
 
 const color_purple = "#5052c9";
@@ -214,12 +215,37 @@ function LoginForm(){
   let [formEmail, setFormEmail] = useState("");
   let [formPassword, setFormPassword] = useState("");
 
+  //For form input validation
+  let [formEmailValidationError, setFormEmailValidationError] = useState(false);
+  let [formEmailValidationErrorMessage, setFormEmailValidationErrorMessage] = useState("");
+
+  let [formPasswordValidationError, setFormPasswordValidationError] = useState(false);
+  let [formPasswordValidationErrorMessage, setFormPasswordValidationErrorMessage] = useState("");
+  //
+
   useEffect(()=>{
     console.log('userState.isLogin', userState.isLogin)
     if(userState.isLogin) navigate("/")
   }, [navigate])
 
   let loginUser = async () => {
+    let validateEmailError = validate.single(formEmail, {presence: true, email: true});
+    if(validateEmailError) {
+      setFormEmailValidationError(true);
+      setFormEmailValidationErrorMessage(validateEmailError[0]);
+      return;
+    }
+
+    let validatePasswordError = validate.single(formPassword, {presence: {allowEmpty: false}, length: {minimum: 6, maximum
+: 20}});
+
+    if(validatePasswordError) {
+      setFormPasswordValidationError(true);
+      setFormPasswordValidationErrorMessage(validatePasswordError[0]);
+      return;
+    }
+
+    return;
     let loginPromise = new Promise(function(resolve, reject) {
       let options = {
         'method': 'POST',
@@ -264,8 +290,8 @@ function LoginForm(){
       backgroundColor: color_white,
     },
     login_block_control: {
-      marginTop: "5px",
-      marginBottom: "5px",
+      marginTop: "10px",
+      marginBottom: "10px",
     }
   }));
   const classes = useStyles();
@@ -274,9 +300,13 @@ function LoginForm(){
       <Box className={classes.login_block_control}>
         <TextField fullWidth
         required
+        error={formEmailValidationError}
+        helperText={formEmailValidationErrorMessage}
         id="outlined-required"
         label="Email"
         onChange={(e) => {
+          setFormEmailValidationError(false);
+          setFormEmailValidationErrorMessage("");
           setFormEmail(e.target.value);
         }}
         />
@@ -284,10 +314,14 @@ function LoginForm(){
       <Box className={classes.login_block_control}>
         <TextField fullWidth
         id="outlined-password-input"
-        label="Password"
+        error={formPasswordValidationError}
+        helperText={formPasswordValidationErrorMessage}
+        label="Password(6-20 char)"
         type="password"
         autoComplete="current-password"
         onChange={(e) => {
+          setFormPasswordValidationError(false);
+          setFormPasswordValidationErrorMessage("");
           setFormPassword(e.target.value);
         }}
         />

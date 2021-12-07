@@ -233,7 +233,7 @@ function LoginForm(){
   }, [navigate])
 
   let loginUser = async () => {
-    let validateEmailError = validate.single(formEmail, {presence: true, email: true});
+    let validateEmailError = validate.single(formEmail, {presence: {allowEmpty: false}, email: true});
     if(validateEmailError) {
       setFormEmailValidationError(true);
       setFormEmailValidationErrorMessage(validateEmailError[0]);
@@ -370,7 +370,7 @@ function RegisterForm(props){
   }, [navigate])
 
   let registerUser = async () => {
-    let validateEmailError = validate.single(formEmail, {presence: true, email: true});
+    let validateEmailError = validate.single(formEmail, {presence: {allowEmpty: false}, email: true});
     if(validateEmailError) {
       setFormEmailValidationError(true);
       setFormEmailValidationErrorMessage(validateEmailError[0]);
@@ -426,7 +426,7 @@ function RegisterForm(props){
     } catch (e) {
       console.log(e)
       setFormEmailValidationError(true);
-      setFormEmailValidationErrorMessage(e.error);
+      setFormEmailValidationErrorMessage(e.message);
     } finally {
       setIsLoading(false);
     }

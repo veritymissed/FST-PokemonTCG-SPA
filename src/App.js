@@ -412,7 +412,7 @@ function RegisterForm(props){
       };
       request(options, function (error, response) {
         if (error) throw error;
-        resolve(response.body);
+        resolve(JSON.parse(response.body));
       });
 
     });
@@ -422,8 +422,11 @@ function RegisterForm(props){
       setIsLoading(true)
       let res = await registerPromise;
       console.log('register res', res)
+      if(res.status !== 200) throw res;
     } catch (e) {
       console.log(e)
+      setFormEmailValidationError(true);
+      setFormEmailValidationErrorMessage(e.error);
     } finally {
       setIsLoading(false);
     }

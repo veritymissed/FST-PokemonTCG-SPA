@@ -347,6 +347,8 @@ function LoginForm(){
 }
 
 function RegisterForm(props){
+  const { dispatch } = useContext(UserContext);
+
   const navigate = useNavigate();
   let [isLoading, setIsLoading] = useState(false);
 
@@ -411,8 +413,15 @@ function RegisterForm(props){
         }
       };
       request(options, function (error, response) {
-        if (error) throw error;
-        resolve(JSON.parse(response.body));
+        try {
+          if (error) throw error;
+          else{
+            console.log(response.statusCode);
+            resolve(response.statusCode);
+          }
+        } catch (e) {
+          throw error;
+        }
       });
 
     });
@@ -420,9 +429,17 @@ function RegisterForm(props){
     try {
       if(isLoading) return;
       setIsLoading(true)
-      let res = await registerPromise;
-      console.log('register res', res)
-      if(res.status !== 200) throw res;
+      let resStatusCode = await registerPromise;
+
+      if(resStatusCode !== 201) throw new Error("Registering error occurred !");
+      else {
+        setSessionStorage({currentUser: {
+          email: formEmail,
+          favorite_cards: []
+        }})
+        dispatch({type: 'login', payload: { currentUserEmail: formEmail, favorite_cards: []}})
+        navigate('/');
+      }
     } catch (e) {
       console.log(e)
       setFormEmailValidationError(true);

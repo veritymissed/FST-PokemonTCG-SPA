@@ -18,6 +18,8 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import Cookies from 'js-cookie';
 import * as _ from 'lodash';
 import headerIcon from './static/images/gengar.png';
+import RegisterForm from './RegisterForm';
+import LoginForm from './LoginForm';
 
 import request from 'request';
 
@@ -29,18 +31,18 @@ import * as ponkemon_cards from './static/data/cards.json'
 import * as validate from 'validate.js';
 let cards = ponkemon_cards.default.data;
 
-const color_purple = "#5052c9";
-const color_white = "#f5f6f7";
-const font_size = "16px";
-const font_weight = "700";
+export const color_purple = "#5052c9";
+export const color_white = "#f5f6f7";
+export const font_size = "16px";
+export const font_weight = "700";
 
 const rarities = raritiesEsModule.default.data;
 const supertypes = supertypesEsModule.default.data;
 const types = typesEsModule.default.data;
 
 //LoginForm & RegisterForm
-const MIN_PASSWORD_LENGTH = 4;
-const MAX_PASSWORD_LENGTH = 20;
+export const MIN_PASSWORD_LENGTH = 4;
+export const MAX_PASSWORD_LENGTH = 20;
 
 const QUERYING_API_PAGE_SIZE = 8;
 
@@ -69,9 +71,9 @@ function reducer(state, action) {
   }
 };
 
-const UserContext = React.createContext(null);
+export const UserContext = React.createContext(null);
 
-function setSessionStorage(session){
+export function setSessionStorage(session){
   removeSessionStorage();
   let jsonStringOfNewSession = JSON.stringify(session);
   localStorage.setItem("session", jsonStringOfNewSession)
@@ -81,7 +83,7 @@ function removeSessionStorage(){
   localStorage.removeItem("session");
 }
 
-function getSessionStorage(){
+export function getSessionStorage(){
   const sessionCookie = localStorage.getItem("session");
   if(sessionCookie === "undefined" || !sessionCookie) return {};
   else return JSON.parse(sessionCookie);
@@ -205,316 +207,6 @@ function CardList(props){
         <PokemonCard card={card} addTo={addTo} removeFrom={removeFrom}></PokemonCard>
       ))
     }
-    </Box>
-  )
-}
-
-function LoginForm(){
-  const { userState, dispatch } = useContext(UserContext);
-  console.log('userState in LoginForm', userState);
-
-  const navigate = useNavigate();
-  let [isLoading, setIsLoading] = useState(false);
-
-  let [formEmail, setFormEmail] = useState("");
-  let [formPassword, setFormPassword] = useState("");
-
-  //For form input validation
-  let [formEmailValidationError, setFormEmailValidationError] = useState(false);
-  let [formEmailValidationErrorMessage, setFormEmailValidationErrorMessage] = useState("");
-
-  let [formPasswordValidationError, setFormPasswordValidationError] = useState(false);
-  let [formPasswordValidationErrorMessage, setFormPasswordValidationErrorMessage] = useState("");
-  //
-
-  useEffect(()=>{
-    console.log('userState.isLogin', userState.isLogin)
-    if(userState.isLogin) navigate("/")
-  }, [navigate])
-
-  let loginUser = async () => {
-    let validateEmailError = validate.single(formEmail, {presence: {allowEmpty: false}, email: true});
-    if(validateEmailError) {
-      setFormEmailValidationError(true);
-      setFormEmailValidationErrorMessage(validateEmailError[0]);
-      return;
-    }
-
-    let validatePasswordError = validate.single(formPassword, {presence: {allowEmpty: false}, length: {minimum: MIN_PASSWORD_LENGTH, maximum
-: MAX_PASSWORD_LENGTH}});
-
-    if(validatePasswordError) {
-      setFormPasswordValidationError(true);
-      setFormPasswordValidationErrorMessage(validatePasswordError[0]);
-      return;
-    }
-
-    let loginPromise = new Promise(function(resolve, reject) {
-      let options = {
-        'method': 'POST',
-        'url': 'http://localhost:3000/auth/login',
-        'headers': {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          "username": formEmail,
-          "password": formPassword
-        })
-      };
-      request(options, function (error, response) {
-        if (error) throw error;
-        resolve(JSON.parse(response.body));
-      });
-
-    });
-
-    try {
-      if(isLoading) return;
-      setIsLoading(true)
-      let res = await loginPromise;
-      console.log('login res', res)
-      if(res.statusCode === 401) {
-        setFormPasswordValidationError(true);
-        setFormEmailValidationError(true);
-        setFormEmailValidationErrorMessage("Email or password not correct.");
-        throw new Error("Login user authentication error!");
-      }
-
-      setSessionStorage({currentUser: res.user})
-      dispatch({type: 'login', payload: { currentUserEmail: res.user.email, favorite_cards: res.user.favorite_cards }})
-      navigate('/');
-    } catch (e) {
-      console.log(e)
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  let useStyles = makeStyles((theme)=> ({
-    login_block_container:{
-      borderRadius: "5px",
-      width: "400px",
-      margin: "40px auto 10px auto",
-      padding: "15px 30px 15px 30px",
-      backgroundColor: color_white,
-    },
-    login_block_control: {
-      marginTop: "10px",
-      marginBottom: "10px",
-    }
-  }));
-  const classes = useStyles();
-  return (
-    <Box className={classes.login_block_container}>
-      <Box className={classes.login_block_control}>
-        <TextField fullWidth
-        required
-        error={formEmailValidationError}
-        helperText={formEmailValidationErrorMessage}
-        id="outlined-required"
-        label="Email"
-        onChange={(e) => {
-          setFormEmailValidationError(false);
-          setFormEmailValidationErrorMessage("");
-          setFormEmail(e.target.value);
-        }}
-        />
-      </Box>
-      <Box className={classes.login_block_control}>
-        <TextField fullWidth
-        id="outlined-password-input"
-        error={formPasswordValidationError}
-        helperText={formPasswordValidationErrorMessage}
-        label={`Password(${MIN_PASSWORD_LENGTH}-${MAX_PASSWORD_LENGTH} char)`}
-        type="password"
-        autoComplete="current-password"
-        onChange={(e) => {
-          setFormPasswordValidationError(false);
-          setFormPasswordValidationErrorMessage("");
-          setFormPassword(e.target.value);
-        }}
-        />
-      </Box>
-
-      <Button onClick={(e) => {
-        loginUser()
-      }}>
-      Login
-      {isLoading && (<Loader width={15} height={15} borderWidth={6}></Loader>)}
-      </Button>
-    </Box>
-  )
-}
-
-function RegisterForm(props){
-  const { dispatch } = useContext(UserContext);
-
-  const navigate = useNavigate();
-  let [isLoading, setIsLoading] = useState(false);
-
-  let [formEmail, setFormEmail] = useState("");
-  let [formPassword, setFormPassword] = useState("");
-  let [formRepeatPassword, setFormRepeatPassword] = useState("");
-
-  //For form input validation
-  let [formEmailValidationError, setFormEmailValidationError] = useState(false);
-  let [formEmailValidationErrorMessage, setFormEmailValidationErrorMessage] = useState("");
-
-  let [formPasswordValidationError, setFormPasswordValidationError] = useState(false);
-  let [formPasswordValidationErrorMessage, setFormPasswordValidationErrorMessage] = useState("");
-
-  let [formRepeatPasswordValidationError, setFormRepeatPasswordValidationError] = useState(false);
-  let [formRepeatPasswordValidationErrorMessage, setFormRepeatPasswordValidationErrorMessage] = useState("");
-
-  useEffect(()=>{
-    const {currentUser} = getSessionStorage();
-    if(currentUser) navigate('/')
-  }, [navigate])
-
-  let registerUser = async () => {
-    let validateEmailError = validate.single(formEmail, {presence: {allowEmpty: false}, email: true});
-    if(validateEmailError) {
-      setFormEmailValidationError(true);
-      setFormEmailValidationErrorMessage(validateEmailError[0]);
-      return;
-    }
-
-    let validatePasswordError = validate.single(formPassword, {presence: {allowEmpty: false}, length: {minimum: MIN_PASSWORD_LENGTH, maximum
-: MAX_PASSWORD_LENGTH}});
-
-    if(validatePasswordError) {
-      setFormPasswordValidationError(true);
-      setFormPasswordValidationErrorMessage(validatePasswordError[0]);
-      return;
-    }
-
-    let validatePasswordRepeatError = validate({formPassword, formRepeatPassword}, {
-      formRepeatPassword: {
-        equality: "formPassword"
-      }
-    });
-    console.log('validatePasswordRepeatError', validatePasswordRepeatError)
-    if(validatePasswordRepeatError) {
-      setFormRepeatPasswordValidationError(true);
-      setFormRepeatPasswordValidationErrorMessage(validatePasswordRepeatError.formRepeatPassword[0]);
-      return;
-    }
-
-    let registerPromise = new Promise(function(resolve, reject) {
-      let options = {
-        'method': 'POST',
-        'url': 'http://localhost:3000/users/',
-        'headers': {
-          'Content-Type': 'application/x-www-form-urlencoded'
-        },
-        form: {
-          'email': formEmail,
-          'password': formPassword
-        }
-      };
-      request(options, function (error, response) {
-        try {
-          if (error) throw error;
-          else{
-            console.log(response.statusCode);
-            resolve(response.statusCode);
-          }
-        } catch (e) {
-          throw error;
-        }
-      });
-
-    });
-
-    try {
-      if(isLoading) return;
-      setIsLoading(true)
-      let resStatusCode = await registerPromise;
-
-      if(resStatusCode !== 201) throw new Error("Registering error occurred !");
-      else {
-        setSessionStorage({currentUser: {
-          email: formEmail,
-          favorite_cards: []
-        }})
-        dispatch({type: 'login', payload: { currentUserEmail: formEmail, favorite_cards: []}})
-        navigate('/');
-      }
-    } catch (e) {
-      console.log(e)
-      setFormEmailValidationError(true);
-      setFormEmailValidationErrorMessage(e.message);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  let useStyles = makeStyles((theme)=> ({
-    register_block_container:{
-      borderRadius: "5px",
-      width: "400px",
-      margin: "40px auto 10px auto",
-      padding: "15px 30px 15px 30px",
-      backgroundColor: color_white,
-    },
-    register_block_control: {
-      marginTop: "10px",
-      marginBottom: "10px",
-    }
-  }));
-  const classes = useStyles();
-
-  return(
-    <Box className={classes.register_block_container}>
-      <Box className={classes.register_block_control}>
-        <TextField fullWidth
-        required
-        error={formEmailValidationError}
-        helperText={formEmailValidationErrorMessage}
-        id="outlined-required"
-        label="Email"
-        onChange={(e) => {
-          setFormEmailValidationError(false);
-          setFormEmailValidationErrorMessage("");
-          setFormEmail(e.target.value);
-        }}
-        />
-      </Box>
-      <Box className={classes.register_block_control}>
-        <TextField fullWidth
-        id="outlined-password-input"
-        error={formPasswordValidationError}
-        helperText={formPasswordValidationErrorMessage}
-        label={`Password(${MIN_PASSWORD_LENGTH}-${MAX_PASSWORD_LENGTH} char)`}
-        type="password"
-        autoComplete="current-password"
-        onChange={(e) => {
-          setFormPasswordValidationError(false);
-          setFormPasswordValidationErrorMessage("");
-          setFormPassword(e.target.value);
-        }}
-        />
-      </Box>
-      <Box className={classes.register_block_control}>
-        <TextField fullWidth
-        id="outlined-password-input"
-        error={formRepeatPasswordValidationError}
-        helperText={formRepeatPasswordValidationErrorMessage}
-        label="Repeat password"
-        type="password"
-        autoComplete="current-password"
-        onChange={(e) => {
-          setFormRepeatPasswordValidationError(false);
-          setFormRepeatPasswordValidationErrorMessage("");
-          setFormRepeatPassword(e.target.value);
-        }}
-        />
-      </Box>
-      <Button onClick={(e) => {
-        registerUser()
-      }}>Register
-      { isLoading && (<Loader width={15} height={15} borderWidth={6}></Loader>) }
-      </Button>
     </Box>
   )
 }
@@ -958,7 +650,7 @@ function PokemonCard(props){
   </Card>)
 }
 
-function Loader(props){
+export function Loader(props){
   const { width, height, borderWidth } = props;
   let useStyles = makeStyles({
     loader: {

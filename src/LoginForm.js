@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useReducer, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Box, TextField, Button } from '@mui/material';
 import { makeStyles } from '@mui/styles';
@@ -10,20 +10,20 @@ import {
   color_white,
   MIN_PASSWORD_LENGTH,
   MAX_PASSWORD_LENGTH,
-} from './App.js'
+} from './App.js';
 
 import * as validate from 'validate.js';
 import request from 'request';
 
-export default function RegisterForm(props){
-  const { dispatch } = useContext(UserContext);
+export default function LoginForm(){
+  const { userState, dispatch } = useContext(UserContext);
+  console.log('userState in LoginForm', userState);
 
   const navigate = useNavigate();
   let [isLoading, setIsLoading] = useState(false);
 
   let [formEmail, setFormEmail] = useState("");
   let [formPassword, setFormPassword] = useState("");
-  let [formRepeatPassword, setFormRepeatPassword] = useState("");
 
   //For form input validation
   let [formEmailValidationError, setFormEmailValidationError] = useState(false);
@@ -31,16 +31,14 @@ export default function RegisterForm(props){
 
   let [formPasswordValidationError, setFormPasswordValidationError] = useState(false);
   let [formPasswordValidationErrorMessage, setFormPasswordValidationErrorMessage] = useState("");
-
-  let [formRepeatPasswordValidationError, setFormRepeatPasswordValidationError] = useState(false);
-  let [formRepeatPasswordValidationErrorMessage, setFormRepeatPasswordValidationErrorMessage] = useState("");
+  //
 
   useEffect(()=>{
-    const {currentUser} = getSessionStorage();
-    if(currentUser) navigate('/')
+    console.log('userState.isLogin', userState.isLogin)
+    if(userState.isLogin) navigate("/")
   }, [navigate])
 
-  let registerUser = async () => {
+  let loginUser = async () => {
     let validateEmailError = validate.single(formEmail, {presence: {allowEmpty: false}, email: true});
     if(validateEmailError) {
       setFormEmailValidationError(true);
@@ -57,40 +55,21 @@ export default function RegisterForm(props){
       return;
     }
 
-    let validatePasswordRepeatError = validate({formPassword, formRepeatPassword}, {
-      formRepeatPassword: {
-        equality: "formPassword"
-      }
-    });
-    console.log('validatePasswordRepeatError', validatePasswordRepeatError)
-    if(validatePasswordRepeatError) {
-      setFormRepeatPasswordValidationError(true);
-      setFormRepeatPasswordValidationErrorMessage(validatePasswordRepeatError.formRepeatPassword[0]);
-      return;
-    }
-
-    let registerPromise = new Promise(function(resolve, reject) {
+    let loginPromise = new Promise(function(resolve, reject) {
       let options = {
         'method': 'POST',
-        'url': 'http://localhost:3000/users/',
+        'url': 'http://localhost:3000/auth/login',
         'headers': {
-          'Content-Type': 'application/x-www-form-urlencoded'
+          'Content-Type': 'application/json'
         },
-        form: {
-          'email': formEmail,
-          'password': formPassword
-        }
+        body: JSON.stringify({
+          "username": formEmail,
+          "password": formPassword
+        })
       };
       request(options, function (error, response) {
-        try {
-          if (error) throw error;
-          else{
-            console.log(response.statusCode);
-            resolve(response.statusCode);
-          }
-        } catch (e) {
-          throw error;
-        }
+        if (error) throw error;
+        resolve(JSON.parse(response.body));
       });
 
     });
@@ -98,44 +77,42 @@ export default function RegisterForm(props){
     try {
       if(isLoading) return;
       setIsLoading(true)
-      let resStatusCode = await registerPromise;
-
-      if(resStatusCode !== 201) throw new Error("Registering error occurred !");
-      else {
-        setSessionStorage({currentUser: {
-          email: formEmail,
-          favorite_cards: []
-        }})
-        dispatch({type: 'login', payload: { currentUserEmail: formEmail, favorite_cards: []}})
-        navigate('/');
+      let res = await loginPromise;
+      console.log('login res', res)
+      if(res.statusCode === 401) {
+        setFormPasswordValidationError(true);
+        setFormEmailValidationError(true);
+        setFormEmailValidationErrorMessage("Email or password not correct.");
+        throw new Error("Login user authentication error!");
       }
+
+      setSessionStorage({currentUser: res.user})
+      dispatch({type: 'login', payload: { currentUserEmail: res.user.email, favorite_cards: res.user.favorite_cards }})
+      navigate('/');
     } catch (e) {
       console.log(e)
-      setFormEmailValidationError(true);
-      setFormEmailValidationErrorMessage(e.message);
     } finally {
       setIsLoading(false);
     }
   };
 
   let useStyles = makeStyles((theme)=> ({
-    register_block_container:{
+    login_block_container:{
       borderRadius: "5px",
       width: "400px",
       margin: "40px auto 10px auto",
       padding: "15px 30px 15px 30px",
       backgroundColor: color_white,
     },
-    register_block_control: {
+    login_block_control: {
       marginTop: "10px",
       marginBottom: "10px",
     }
   }));
   const classes = useStyles();
-
-  return(
-    <Box className={classes.register_block_container}>
-      <Box className={classes.register_block_control}>
+  return (
+    <Box className={classes.login_block_container}>
+      <Box className={classes.login_block_control}>
         <TextField fullWidth
         required
         error={formEmailValidationError}
@@ -149,7 +126,7 @@ export default function RegisterForm(props){
         }}
         />
       </Box>
-      <Box className={classes.register_block_control}>
+      <Box className={classes.login_block_control}>
         <TextField fullWidth
         id="outlined-password-input"
         error={formPasswordValidationError}
@@ -164,25 +141,12 @@ export default function RegisterForm(props){
         }}
         />
       </Box>
-      <Box className={classes.register_block_control}>
-        <TextField fullWidth
-        id="outlined-password-input"
-        error={formRepeatPasswordValidationError}
-        helperText={formRepeatPasswordValidationErrorMessage}
-        label="Repeat password"
-        type="password"
-        autoComplete="current-password"
-        onChange={(e) => {
-          setFormRepeatPasswordValidationError(false);
-          setFormRepeatPasswordValidationErrorMessage("");
-          setFormRepeatPassword(e.target.value);
-        }}
-        />
-      </Box>
+
       <Button onClick={(e) => {
-        registerUser()
-      }}>Register
-      { isLoading && (<Loader width={15} height={15} borderWidth={6}></Loader>) }
+        loginUser()
+      }}>
+      Login
+      {isLoading && (<Loader width={15} height={15} borderWidth={6}></Loader>)}
       </Button>
     </Box>
   )

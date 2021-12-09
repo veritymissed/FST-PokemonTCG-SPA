@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useReducer, useContext } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Box, TextField, Button } from '@mui/material';
 import { makeStyles } from '@mui/styles';
@@ -6,7 +6,6 @@ import {
   UserContext,
   Loader,
   setSessionStorage,
-  getSessionStorage,
   color_white,
   MIN_PASSWORD_LENGTH,
   MAX_PASSWORD_LENGTH,

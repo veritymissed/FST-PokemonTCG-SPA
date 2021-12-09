@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useReducer, useContext } from 'react';
-import logo from './logo.svg';
 import './App.css';
 import { Box, TextField, Button, Typography, Icon } from '@mui/material';
 import { Card, CardMedia, CardContent, CardActions } from '@mui/material';
@@ -16,19 +15,20 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import DeleteIcon from '@mui/icons-material/Delete';
 import Cookies from 'js-cookie';
-import * as _ from 'lodash';
 import headerIcon from './static/images/gengar.png';
 import RegisterForm from './RegisterForm';
 import LoginForm from './LoginForm';
+import FavoriteCardList from './FavoriteCardList';
 
 import request from 'request';
+import * as _ from 'lodash';
+import * as validate from 'validate.js';
 
 import * as raritiesEsModule from './static/rarities.json';
 import * as supertypesEsModule from './static/supertypes.json';
 import * as typesEsModule from './static/types.json';
 import * as ponkemon_cards from './static/data/cards.json'
 
-import * as validate from 'validate.js';
 let cards = ponkemon_cards.default.data;
 
 export const color_purple = "#5052c9";
@@ -89,12 +89,12 @@ export function getSessionStorage(){
   else return JSON.parse(sessionCookie);
 }
 
-function getCurrentUser(){
+export function getCurrentUser(){
   const {currentUser} = getSessionStorage();
   return currentUser;
 }
 
-const getUpdateUserPromise = function(updatingUser, form){
+export const getUpdateUserPromise = function(updatingUser, form){
   return new Promise(function(resolve) {
     let options = {
       'method': 'PATCH',
@@ -156,48 +156,7 @@ function App(props) {
   );
 }
 
-function FavoriteCardList(props){
-  const { userState, dispatch } = useContext(UserContext);
-  console.log('userState in FavoriteCardList', userState);
-  let [favoriteCardList, setFavoriteCardList] = useState(userState.favorite_cards);
-
-  let navigate = useNavigate();
-  useEffect(() => {
-    if(!userState.isLogin) {
-      navigate('/login');
-    }
-    setFavoriteCardList(userState.favorite_cards);
-  },[userState]);
-
-
-  let [isUpdating, setIsUpdating] = useState(false);
-
-  let removeFrom = async (cardId) => {
-    console.log(`card id = ${cardId}`);
-    if(isUpdating) return
-    let currentUser = getCurrentUser();
-    if(_.isEmpty(currentUser)) return;
-
-    let foundIndex = currentUser.favorite_cards.findIndex((cardInCurrentUser) => cardInCurrentUser.id === cardId);
-    if(foundIndex < 0) return;
-    currentUser.favorite_cards.splice(foundIndex, 1);
-    setSessionStorage({currentUser})
-
-    try {
-      setIsUpdating(true);
-      await getUpdateUserPromise(currentUser, {favorite_cards: currentUser.favorite_cards || []});
-      dispatch({type: "update_favorite_cards", payload: {favorite_cards: currentUser.favorite_cards}});
-    } catch (e) {
-      console.log(e)
-    } finally {
-      setIsUpdating(false);
-    }
-  };
-
-  return (<CardList cards={favoriteCardList} removeFrom={removeFrom}></CardList>)
-}
-
-function CardList(props){
+export function CardList(props){
   const { cards, addTo, removeFrom } = props;
 
   return (

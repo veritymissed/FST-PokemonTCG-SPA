@@ -85,8 +85,7 @@ export default function RegisterForm(props){
         try {
           if (error) throw error;
           else{
-            console.log(response.statusCode);
-            resolve(response.statusCode);
+            resolve(JSON.parse(response.body));
           }
         } catch (e) {
           throw error;
@@ -98,9 +97,9 @@ export default function RegisterForm(props){
     try {
       if(isLoading) return;
       setIsLoading(true)
-      let resStatusCode = await registerPromise;
-
-      if(resStatusCode !== 201) throw new Error("Registering error occurred !");
+      let res = await registerPromise;
+      console.log(res)
+      if(res.statusCode !== 201) throw new Error(res.message);
       else {
         setSessionStorage({currentUser: {
           email: formEmail,

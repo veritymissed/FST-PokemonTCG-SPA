@@ -34,7 +34,6 @@ let cards = ponkemon_cards.default.data;
 
 export const color_purple = "#5052c9";
 export const color_white = "#f5f6f7";
-export const font_size = "16px";
 export const font_weight = "700";
 
 const rarities = raritiesEsModule.default.data;

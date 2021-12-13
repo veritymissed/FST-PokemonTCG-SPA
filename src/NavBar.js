@@ -8,7 +8,6 @@ import headerIcon from './static/images/gengar.png';
 import {
   UserContext,
   color_purple,
-  font_size,
   font_weight,
   color_white,
 
@@ -20,13 +19,21 @@ export default function NavBar(props){
   let navigate = useNavigate();
   const currentPath = useLocation().pathname;
 
+  let font_size = "17px";
   let useStyles = makeStyles({
     navbar_box: {
       display: "flex",
+      justifyContent: "space-between",
       padding: "8px 16px 8px 16px",
       backgroundColor: "rgb(36, 37, 38)",
       color: "#f5f6f7",
       fontSize: "16px",
+    },
+    center_title: {
+      padding: "8px 16px 8px 16px",
+      color: color_white,
+      fontSize: font_size,
+      fontWeight: font_weight,
     },
     active_button:{
       color: color_purple,
@@ -44,7 +51,7 @@ export default function NavBar(props){
 
   return (
     <Box className={classes.navbar_box}>
-      <Box sx={{flexGrow: 1}}>
+      <Box>
         <Button onClick={(e)=>{
           navigate('/')
         }}><img height="30" src={headerIcon}/>
@@ -67,16 +74,19 @@ export default function NavBar(props){
         </Box>
       )}
       {userState.isLogin && (
-        <Box sx={{width: 350}}>
+        <>
+        <Box className={classes.center_title}>{userState.currentUserEmail}</Box>
+        <Box>
         <Button onClick={(e) => {navigate('/favorite_list')}}>
           <Box display="flex" className={(currentPath === "/favorite_list") ? classes.active_button : classes.non_active_button}><Box style={{lineHeight: "10px", margin: "0px 3px"}}><FavoriteIcon></FavoriteIcon></Box></Box>
         </Button>
         <Button onClick={(e)=>{
           navigate('/logout');
         }}>
-          <Box className={classes.non_active_button}>Logout - {userState.currentUserEmail}</Box>
+          <Box className={classes.non_active_button}>Logout</Box>
         </Button>
         </Box>
+        </>
       )}
     </Box>
   );

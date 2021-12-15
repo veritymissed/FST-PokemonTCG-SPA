@@ -1,4 +1,102 @@
-# Getting Started with Create React App
+# Pokémon TCG Client Side Application
+
+## Application overview
+
+- Homepage (Querying cards API and displayed block)
+
+- Register page
+
+- Login page
+
+- Favorite card page (Logged user only)
+
+## Home page - Pokémon TCG API querying part
+
+- Query cards according to the parameters (Name, Type, Rarity, HP)
+
+- Load next page of result of the current querying parameters.
+
+- Added card into favorite list (logged user only)
+
+![Query](https://user-images.githubusercontent.com/6461602/146106069-3fe3e021-6a56-481e-8404-0a03dca85b71.png)
+
+![Add](https://user-images.githubusercontent.com/6461602/146106238-a1797644-8ae3-42e9-a2f1-f28c90af09c7.png)
+
+## Favorite card page (Logged user only)
+
+- View all of favorite cards
+
+- Remove cards from favorite card list
+
+![Favorite](https://user-images.githubusercontent.com/6461602/146107415-1e32b541-561e-4a9d-8480-73d49722509f.png)
+
+## Login page
+
+- Non-blank email
+
+- 4-20 (configured in `MIN_PASSWORD_LENGTH / MAX_PASSWORD_LENGTH` ) char in password
+
+![LoginForm](https://user-images.githubusercontent.com/6461602/146107528-74a2f32c-75c6-4c6e-89e1-453721a32ae3.png)
+
+## Register page
+
+- Non-blank email
+
+- 4-20 char in password
+
+- Password repeat checked
+
+![RegisterForm](https://user-images.githubusercontent.com/6461602/146107513-8c734b56-1ae1-4e0c-b99c-7bfe23aa7e56.png)
+
+## Configuration and constants
+
+```js
+
+// in App.js
+//LoginForm & RegisterForm
+export const MIN_PASSWORD_LENGTH = 4;
+export const MAX_PASSWORD_LENGTH = 20;
+
+//Pokémon TCG API querying each page size
+const QUERYING_API_PAGE_SIZE = 8;
+
+```
+
+## core
+
+```js
+const initialUserState = {
+  isLogin: false,
+  currentUserEmail: null,
+  favorite_cards: [],
+};
+
+function reducer(state, action) {
+  switch (action.type) {
+    case 'login':
+      const { isLogin, ...updatePayload } = action.payload;
+      return { isLogin: true , ...updatePayload };
+    ...
+    default:
+      throw new Error();
+  }
+};
+
+//
+export const UserContext = React.createContext(null);
+
+<UserContext.Provider value={{userState, dispatch}}>
+<Router>
+  <NavBar></NavBar>
+  <Routes>
+    <Route path="/" element={<QueryBlock />}></Route>
+    ...
+  </Routes>
+</Router>
+</UserContext.Provider>
+
+```
+
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
@@ -25,46 +123,11 @@ Builds the app for production to the `build` folder.\
 It correctly bundles React in production mode and optimizes the build for the best performance.
 
 The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### If you don't have the server
 
-### `yarn eject`
+```sh
+yarn global add serve
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `yarn build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+serve -s build
+```

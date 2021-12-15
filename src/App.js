@@ -358,7 +358,6 @@ function QueryBlock(props){
       marginRight: "20px",
     },
     queryButtonText: {
-      color: color_purple,
       fontWeight: "500",
       fontSize: '16px',
       paddingTop: "10px",

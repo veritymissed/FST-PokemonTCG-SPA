@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
+import CardList from './CardList';
 
 import {
   UserContext,
   getCurrentUser,
   setSessionStorage,
-  CardList,
   getUpdateUserPromise,
 } from '../App.js'
 

@@ -3,15 +3,14 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { Box, Button } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import FavoriteIcon from '@mui/icons-material/Favorite';
-import headerIcon from './static/images/gengar.png';
+import headerIcon from '../static/images/gengar.png';
 
 import {
   UserContext,
   color_purple,
   font_weight,
   color_white,
-
-} from './App.js'
+} from '../App.js'
 
 export default function NavBar(props){
   const { userState, dispatch } = useContext(UserContext);

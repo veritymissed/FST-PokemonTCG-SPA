@@ -7,7 +7,7 @@ import {
   setSessionStorage,
   CardList,
   getUpdateUserPromise,
-} from './App.js'
+} from '../App.js'
 
 import * as _ from 'lodash';
 

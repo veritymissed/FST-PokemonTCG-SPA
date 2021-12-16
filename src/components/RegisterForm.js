@@ -10,7 +10,7 @@ import {
   color_white,
   MIN_PASSWORD_LENGTH,
   MAX_PASSWORD_LENGTH,
-} from './App.js'
+} from '../App.js'
 
 import * as validate from 'validate.js';
 import request from 'request';
@@ -85,7 +85,10 @@ export default function RegisterForm(props){
         try {
           if (error) throw error;
           else{
-            resolve(JSON.parse(response.body));
+            resolve({
+              statusCode: response.statusCode,
+              message: JSON.parse(response.body)
+            });
           }
         } catch (e) {
           throw error;

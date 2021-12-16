@@ -9,7 +9,7 @@ import {
   color_white,
   MIN_PASSWORD_LENGTH,
   MAX_PASSWORD_LENGTH,
-} from './App.js';
+} from '../App.js';
 
 import * as validate from 'validate.js';
 import request from 'request';
